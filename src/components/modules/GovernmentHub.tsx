@@ -13,6 +13,15 @@ export function GovernmentHub() {
   const [activeTab, setActiveTab] = useState('verification');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedScheme, setSelectedScheme] = useState<any>(null);
+  const [showUploadModal, setShowUploadModal] = useState(false);
+
+  const [showApplicationModal, setShowApplicationModal] = useState(false);
+  const [showChatModal, setShowChatModal] = useState(false);
+  const [selectedFilter, setSelectedFilter] = useState('all');
+  const [chatMessages, setChatMessages] = useState([
+    { id: 1, sender: 'agent', text: 'Hello! How can I help you today?', time: new Date().toLocaleTimeString() }
+  ]);
+  const [chatInput, setChatInput] = useState('');
 
   // Mock data for government schemes
   const governmentSchemes = [
@@ -78,7 +87,6 @@ export function GovernmentHub() {
       id: 'APP001',
       scheme: 'PM CARES Fund Grant',
       submittedDate: '2024-12-10',
-      status: 'Under Review',
       amount: '₹50,00,000',
       reviewStage: 'Technical Evaluation',
       nextAction: 'Awaiting technical committee review'
@@ -87,30 +95,9 @@ export function GovernmentHub() {
       id: 'APP002',
       scheme: 'Swachh Bharat Mission Grant',
       submittedDate: '2024-11-25',
-      status: 'Approved',
       amount: '₹25,00,000',
       reviewStage: 'Completed',
       nextAction: 'Fund disbursement in progress'
-    }
-  ];
-
-  // Mock reports data
-  const reports = [
-    {
-      id: 'RPT001',
-      project: 'Rural Healthcare Initiative',
-      type: 'Monthly Progress Report',
-      dueDate: '2025-01-31',
-      status: 'Pending',
-      lastSubmitted: '2024-12-31'
-    },
-    {
-      id: 'RPT002',
-      project: 'Clean Water Project',
-      type: 'Financial Utilization Report',
-      dueDate: '2025-01-15',
-      status: 'Submitted',
-      lastSubmitted: '2025-01-10'
     }
   ];
 
@@ -145,27 +132,7 @@ export function GovernmentHub() {
     }
   ];
 
-  // Mock certificates
-  const certificates = [
-    {
-      id: 'CERT001',
-      title: 'Excellence in Healthcare Services',
-      issuedBy: 'Ministry of Health and Family Welfare',
-      issuedDate: '2024-12-15',
-      validUntil: '2025-12-15',
-      category: 'Performance Recognition',
-      description: 'Awarded for outstanding contribution to rural healthcare initiatives'
-    },
-    {
-      id: 'CERT002',
-      title: 'Digital Innovation Award',
-      issuedBy: 'Ministry of Electronics and IT',
-      issuedDate: '2024-11-20',
-      validUntil: '2025-11-20',
-      category: 'Innovation',
-      description: 'Recognition for innovative use of technology in social programs'
-    }
-  ];
+
 
   const renderVerificationTab = () => (
     <div className="space-y-6">
@@ -211,35 +178,47 @@ export function GovernmentHub() {
               <label className="text-sm font-medium text-gray-700">Valid Until</label>
               <p className="text-gray-900">{verificationStatus.validUntil}</p>
             </div>
-            <button className="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 transition-colors">
+            <button 
+              onClick={() => {
+                const link = document.createElement('a');
+                link.href = 'data:text/plain;charset=utf-8,' + encodeURIComponent(`NGO Verification Certificate\n\nCertificate Number: ${verificationStatus.certificateNumber}\nStatus: ${verificationStatus.status}\nVerified By: ${verificationStatus.verifiedBy}\nValid Until: ${verificationStatus.validUntil}`);
+                link.download = 'ngo-verification-certificate.txt';
+                link.click();
+              }}
+              className="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 transition-colors"
+            >
               Download Certificate
             </button>
           </div>
         </div>
 
         <div>
-          <h4 className="font-semibold text-gray-900 mb-4">Document Verification Status</h4>
+          <h4 className="font-semibold text-gray-900 mb-4">Documents</h4>
           <div className="space-y-3">
             {verificationStatus.documents.map((doc, index) => (
               <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                <div className="flex items-center gap-3">
-                  {doc.status === 'Verified' ? (
-                    <CheckCircle className="w-5 h-5 text-green-600" />
-                  ) : doc.status === 'Pending' ? (
-                    <Clock className="w-5 h-5 text-yellow-600" />
-                  ) : (
-                    <AlertCircle className="w-5 h-5 text-red-600" />
-                  )}
+                <div className="flex-1">
                   <span className="font-medium text-gray-900">{doc.name}</span>
+                  <p className="text-xs text-gray-500 mt-1">{doc.date}</p>
                 </div>
-                <div className="text-right">
-                  <span className={`text-sm font-medium ${
-                    doc.status === 'Verified' ? 'text-green-600' : 
-                    doc.status === 'Pending' ? 'text-yellow-600' : 'text-red-600'
-                  }`}>
-                    {doc.status}
-                  </span>
-                  <p className="text-xs text-gray-500">{doc.date}</p>
+                <div className="flex items-center gap-2">
+                  <button 
+                    onClick={() => alert(`Document: ${doc.name}\nUploaded: ${doc.date}\nStatus: ${doc.status}`)}
+                    className="px-3 py-1 text-sm text-orange-600 hover:text-orange-700 transition-colors"
+                  >
+                    View
+                  </button>
+                  <button 
+                    onClick={() => {
+                      const link = document.createElement('a');
+                      link.href = 'data:text/plain;charset=utf-8,' + encodeURIComponent(`Document: ${doc.name}\nUploaded: ${doc.date}\nStatus: ${doc.status}`);
+                      link.download = doc.name.toLowerCase().replace(/\s+/g, '-') + '.txt';
+                      link.click();
+                    }}
+                    className="px-3 py-1 text-sm bg-orange-500 text-white rounded hover:bg-orange-600 transition-colors"
+                  >
+                    Download
+                  </button>
                 </div>
               </div>
             ))}
@@ -262,14 +241,29 @@ export function GovernmentHub() {
             className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
           />
         </div>
-        <button className="flex items-center gap-2 px-4 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
-          <Filter className="w-5 h-5" />
-          Filter
-        </button>
+        <select
+          value={selectedFilter}
+          onChange={(e) => setSelectedFilter(e.target.value)}
+          className="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+        >
+          <option value="all">All Categories</option>
+          <option value="Healthcare">Healthcare</option>
+          <option value="Sanitation">Sanitation</option>
+          <option value="Technology">Technology</option>
+          <option value="Education">Education</option>
+        </select>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-        {governmentSchemes.map((scheme) => (
+        {governmentSchemes
+          .filter(scheme => {
+            const matchesSearch = scheme.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                                scheme.department.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                                scheme.category.toLowerCase().includes(searchTerm.toLowerCase());
+            const matchesFilter = selectedFilter === 'all' || scheme.category === selectedFilter;
+            return matchesSearch && matchesFilter;
+          })
+          .map((scheme) => (
           <div key={scheme.id} className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
             <div className="flex items-start justify-between mb-4">
               <div className="flex-1">
@@ -310,7 +304,10 @@ export function GovernmentHub() {
               >
                 Apply Now
               </button>
-              <button className="p-2 text-gray-400 hover:text-gray-600 transition-colors">
+              <button 
+                onClick={() => alert(`Viewing details for: ${scheme.title}\n\nDepartment: ${scheme.department}\nAmount: ${scheme.amount}\nDeadline: ${scheme.deadline}\nDescription: ${scheme.description}`)}
+                className="p-2 text-gray-400 hover:text-gray-600 transition-colors"
+              >
                 <Eye className="w-4 h-4" />
               </button>
             </div>
@@ -324,7 +321,10 @@ export function GovernmentHub() {
     <div className="space-y-6">
       <div className="flex items-center justify-between mb-6">
         <h3 className="text-xl font-semibold text-gray-900">My Applications</h3>
-        <button className="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 transition-colors">
+        <button 
+          onClick={() => setShowApplicationModal(true)}
+          className="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 transition-colors"
+        >
           New Application
         </button>
       </div>
@@ -341,28 +341,26 @@ export function GovernmentHub() {
                   <span>Amount: {app.amount}</span>
                 </div>
               </div>
-              <span className={`px-3 py-1 text-sm rounded-full ${
-                app.status === 'Approved' ? 'bg-green-100 text-green-800' :
-                app.status === 'Under Review' ? 'bg-yellow-100 text-yellow-800' :
-                'bg-red-100 text-red-800'
-              }`}>
-                {app.status}
-              </span>
             </div>
 
-            <div className="bg-gray-50 rounded-lg p-4 mb-4">
-              <div className="flex items-center gap-2 mb-2">
-                <Clock className="w-4 h-4 text-gray-600" />
-                <span className="text-sm font-medium text-gray-900">Current Stage: {app.reviewStage}</span>
-              </div>
-              <p className="text-sm text-gray-600">{app.nextAction}</p>
-            </div>
+
 
             <div className="flex items-center gap-2">
-              <button className="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 transition-colors">
+              <button 
+                onClick={() => alert(`Application Details:\n\nID: ${app.id}\nScheme: ${app.scheme}\nStatus: ${app.status}\nAmount: ${app.amount}\nStage: ${app.reviewStage}\nNext Action: ${app.nextAction}`)}
+                className="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 transition-colors"
+              >
                 View Details
               </button>
-              <button className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+              <button 
+                onClick={() => {
+                  const link = document.createElement('a');
+                  link.href = 'data:text/plain;charset=utf-8,' + encodeURIComponent(`Application: ${app.scheme}\nID: ${app.id}\nStatus: ${app.status}\nAmount: ${app.amount}`);
+                  link.download = `application-${app.id}.txt`;
+                  link.click();
+                }}
+                className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+              >
                 Download Application
               </button>
             </div>
@@ -372,56 +370,16 @@ export function GovernmentHub() {
     </div>
   );
 
-  const renderReportsTab = () => (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between mb-6">
-        <h3 className="text-xl font-semibold text-gray-900">Report Submission & Monitoring</h3>
-        <button className="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 transition-colors">
-          Submit New Report
-        </button>
-      </div>
 
-      <div className="space-y-4">
-        {reports.map((report) => (
-          <div key={report.id} className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-            <div className="flex items-start justify-between mb-4">
-              <div className="flex-1">
-                <h4 className="font-semibold text-gray-900 mb-2">{report.project}</h4>
-                <p className="text-gray-600 mb-2">{report.type}</p>
-                <div className="flex items-center gap-4 text-sm text-gray-600">
-                  <span>Report ID: {report.id}</span>
-                  <span>Due Date: {report.dueDate}</span>
-                  <span>Last Submitted: {report.lastSubmitted}</span>
-                </div>
-              </div>
-              <span className={`px-3 py-1 text-sm rounded-full ${
-                report.status === 'Submitted' ? 'bg-green-100 text-green-800' :
-                'bg-yellow-100 text-yellow-800'
-              }`}>
-                {report.status}
-              </span>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <button className="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 transition-colors">
-                {report.status === 'Pending' ? 'Submit Report' : 'View Report'}
-              </button>
-              <button className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
-                <Upload className="w-4 h-4 mr-2" />
-                Upload Documents
-              </button>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
 
   const renderDocumentsTab = () => (
     <div className="space-y-6">
       <div className="flex items-center justify-between mb-6">
-        <h3 className="text-xl font-semibold text-gray-900">Document Repository</h3>
-        <button className="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 transition-colors">
+        <h3 className="text-xl font-semibold text-gray-900">Digital Vault</h3>
+        <button 
+          onClick={() => setShowUploadModal(true)}
+          className="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 transition-colors"
+        >
           Upload Document
         </button>
       </div>
@@ -460,12 +418,31 @@ export function GovernmentHub() {
             </div>
 
             <div className="flex items-center gap-2">
-              <button className="flex-1 bg-orange-500 text-white py-2 rounded-lg hover:bg-orange-600 transition-colors">
-                <Download className="w-4 h-4 mr-2 inline" />
-                Download
+              <button 
+                onClick={() => setShowUploadModal(true)}
+                className="px-3 py-2 text-sm bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+              >
+                <Upload className="w-4 h-4 mr-1 inline" />
+                Upload
               </button>
-              <button className="p-2 text-gray-400 hover:text-gray-600 transition-colors">
-                <Eye className="w-4 h-4" />
+              <button 
+                onClick={() => alert(`Document Preview:\n\nName: ${doc.name}\nType: ${doc.type}\nSize: ${doc.size}\nUploaded: ${doc.date}\nStatus: ${doc.shared ? 'Shared with government' : 'Private'}`)}
+                className="px-3 py-2 text-sm text-orange-600 hover:text-orange-700 transition-colors"
+              >
+                <Eye className="w-4 h-4 mr-1 inline" />
+                View
+              </button>
+              <button 
+                onClick={() => {
+                  const link = document.createElement('a');
+                  link.href = 'data:text/plain;charset=utf-8,' + encodeURIComponent(`Document: ${doc.name}\nType: ${doc.type}\nSize: ${doc.size}\nUploaded: ${doc.date}`);
+                  link.download = doc.name.toLowerCase().replace(/\s+/g, '-') + '.txt';
+                  link.click();
+                }}
+                className="px-3 py-2 text-sm bg-orange-500 text-white rounded hover:bg-orange-600 transition-colors"
+              >
+                <Download className="w-4 h-4 mr-1 inline" />
+                Download
               </button>
             </div>
           </div>
@@ -478,7 +455,10 @@ export function GovernmentHub() {
     <div className="space-y-6">
       <div className="flex items-center justify-between mb-6">
         <h3 className="text-xl font-semibold text-gray-900">Notifications & Communication</h3>
-        <button className="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 transition-colors">
+        <button 
+          onClick={() => alert('All notifications marked as read!')}
+          className="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 transition-colors"
+        >
           Mark All Read
         </button>
       </div>
@@ -489,26 +469,13 @@ export function GovernmentHub() {
             !notification.read ? 'border-orange-200 bg-orange-50' : 'border-gray-100'
           }`}>
             <div className="flex items-start gap-4">
-              <div className={`p-2 rounded-lg ${
-                notification.priority === 'High' ? 'bg-red-100' :
-                notification.priority === 'Medium' ? 'bg-yellow-100' : 'bg-blue-100'
-              }`}>
-                <Bell className={`w-5 h-5 ${
-                  notification.priority === 'High' ? 'text-red-600' :
-                  notification.priority === 'Medium' ? 'text-yellow-600' : 'text-blue-600'
-                }`} />
+              <div className="p-2 rounded-lg bg-blue-100">
+                <Bell className="w-5 h-5 text-blue-600" />
               </div>
               <div className="flex-1">
                 <div className="flex items-start justify-between mb-2">
                   <h4 className="font-semibold text-gray-900">{notification.title}</h4>
                   <div className="flex items-center gap-2">
-                    <span className={`px-2 py-1 text-xs rounded-full ${
-                      notification.priority === 'High' ? 'bg-red-100 text-red-800' :
-                      notification.priority === 'Medium' ? 'bg-yellow-100 text-yellow-800' :
-                      'bg-blue-100 text-blue-800'
-                    }`}>
-                      {notification.priority}
-                    </span>
                     {!notification.read && (
                       <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
                     )}
@@ -543,8 +510,13 @@ export function GovernmentHub() {
           </div>
           <h3 className="font-semibold text-gray-900 mb-2">Phone Support</h3>
           <p className="text-gray-600 mb-4">Get immediate help from our support team</p>
-          <p className="font-semibold text-gray-900">1800-123-4567</p>
-          <p className="text-sm text-gray-500">Mon-Fri, 9 AM - 6 PM</p>
+          <button 
+            onClick={() => window.open('tel:+918068447416', '_self')}
+            className="font-semibold text-blue-600 hover:text-blue-700 transition-colors cursor-pointer"
+          >
+            +91 8068447416
+          </button>
+          <p className="text-sm text-gray-500 mt-2">Mon-Fri, 9 AM - 6 PM</p>
         </div>
 
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 text-center">
@@ -553,8 +525,13 @@ export function GovernmentHub() {
           </div>
           <h3 className="font-semibold text-gray-900 mb-2">Email Support</h3>
           <p className="text-gray-600 mb-4">Send us your queries and get detailed responses</p>
-          <p className="font-semibold text-gray-900">support@gov-ngo.in</p>
-          <p className="text-sm text-gray-500">Response within 24 hours</p>
+          <button 
+            onClick={() => window.open('mailto:grants@ngoindia.org?subject=Support Request&body=Hello, I need assistance with...', '_blank')}
+            className="font-semibold text-green-600 hover:text-green-700 transition-colors cursor-pointer"
+          >
+            grants@ngoindia.org
+          </button>
+          <p className="text-sm text-gray-500 mt-2">Response within 24 hours</p>
         </div>
 
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 text-center">
@@ -563,7 +540,10 @@ export function GovernmentHub() {
           </div>
           <h3 className="font-semibold text-gray-900 mb-2">Live Chat</h3>
           <p className="text-gray-600 mb-4">Chat with our experts in real-time</p>
-          <button className="bg-purple-500 text-white px-4 py-2 rounded-lg hover:bg-purple-600 transition-colors">
+          <button 
+            onClick={() => setShowChatModal(true)}
+            className="bg-purple-500 text-white px-4 py-2 rounded-lg hover:bg-purple-600 transition-colors"
+          >
             Start Chat
           </button>
         </div>
@@ -609,84 +589,13 @@ export function GovernmentHub() {
     </div>
   );
 
-  const renderCertificatesTab = () => (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between mb-6">
-        <h3 className="text-xl font-semibold text-gray-900">Government Certificates</h3>
-        <button className="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 transition-colors">
-          Request Certificate
-        </button>
-      </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {certificates.map((cert) => (
-          <div key={cert.id} className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-            <div className="flex items-start gap-4 mb-4">
-              <div className="p-3 bg-yellow-100 rounded-lg">
-                <Award className="w-6 h-6 text-yellow-600" />
-              </div>
-              <div className="flex-1">
-                <h4 className="font-semibold text-gray-900 mb-2">{cert.title}</h4>
-                <p className="text-gray-600 mb-2">{cert.description}</p>
-                <div className="flex items-center gap-2 mb-2">
-                  <span className="px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded-full">
-                    {cert.category}
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            <div className="space-y-2 mb-4">
-              <div className="flex items-center justify-between text-sm">
-                <span className="text-gray-600">Issued By:</span>
-                <span className="font-medium text-gray-900">{cert.issuedBy}</span>
-              </div>
-              <div className="flex items-center justify-between text-sm">
-                <span className="text-gray-600">Issued Date:</span>
-                <span className="font-medium text-gray-900">{cert.issuedDate}</span>
-              </div>
-              <div className="flex items-center justify-between text-sm">
-                <span className="text-gray-600">Valid Until:</span>
-                <span className="font-medium text-gray-900">{cert.validUntil}</span>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <button className="flex-1 bg-orange-500 text-white py-2 rounded-lg hover:bg-orange-600 transition-colors">
-                <Download className="w-4 h-4 mr-2 inline" />
-                Download
-              </button>
-              <button className="p-2 text-gray-400 hover:text-gray-600 transition-colors">
-                <Eye className="w-4 h-4" />
-              </button>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      <div className="bg-blue-50 border border-blue-200 rounded-xl p-6">
-        <div className="flex items-start gap-3">
-          <Award className="w-6 h-6 text-blue-600 mt-1" />
-          <div>
-            <h4 className="font-semibold text-blue-900 mb-2">Certificate Benefits</h4>
-            <ul className="text-blue-800 space-y-1 text-sm">
-              <li>• Enhanced credibility and trust with donors and partners</li>
-              <li>• Priority consideration for government schemes and grants</li>
-              <li>• Recognition in government publications and events</li>
-              <li>• Access to exclusive networking opportunities</li>
-              <li>• Eligibility for additional tax benefits and exemptions</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
 
   const stats = [
     { label: 'Active Schemes', value: '24', icon: FileText, color: 'text-blue-600' },
     { label: 'Applications Submitted', value: '8', icon: Send, color: 'text-green-600' },
-    { label: 'Reports Due', value: '3', icon: BarChart3, color: 'text-orange-600' },
-    { label: 'Certificates Earned', value: '5', icon: Award, color: 'text-purple-600' }
+
+
   ];
 
   return (
@@ -699,7 +608,11 @@ export function GovernmentHub() {
             <p className="text-gray-600">Manage government relations, schemes, and compliance</p>
           </div>
           <div className="flex items-center gap-3">
-            <button className="bg-orange-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-orange-600 transition-colors">
+            <button 
+              onClick={() => setShowApplicationModal(true)}
+              className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-8 py-3 rounded-xl font-semibold hover:from-orange-600 hover:to-orange-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center gap-2"
+            >
+              <Send className="w-5 h-5" />
               Quick Apply
             </button>
           </div>
@@ -729,16 +642,14 @@ export function GovernmentHub() {
       {/* Tabs */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-100">
         <div className="border-b border-gray-200">
-          <div className="flex overflow-x-auto">
+          <div className="flex overflow-x-auto gap-8">
             {[
               { id: 'verification', label: 'NGO Verification', icon: Shield },
               { id: 'schemes', label: 'Government Schemes', icon: FileText },
               { id: 'applications', label: 'Applications', icon: Send },
-              { id: 'reports', label: 'Reports & Monitoring', icon: BarChart3 },
-              { id: 'documents', label: 'Document Repository', icon: FolderOpen },
+              { id: 'documents', label: 'Digital Vault', icon: FolderOpen },
               { id: 'notifications', label: 'Notifications', icon: Bell },
               { id: 'support', label: 'Support & FAQ', icon: HelpCircle },
-              { id: 'certificates', label: 'Certificates', icon: Award }
             ].map((tab) => {
               const Icon = tab.icon;
               return (
@@ -763,11 +674,11 @@ export function GovernmentHub() {
           {activeTab === 'verification' && renderVerificationTab()}
           {activeTab === 'schemes' && renderSchemesTab()}
           {activeTab === 'applications' && renderApplicationsTab()}
-          {activeTab === 'reports' && renderReportsTab()}
+
           {activeTab === 'documents' && renderDocumentsTab()}
           {activeTab === 'notifications' && renderNotificationsTab()}
           {activeTab === 'support' && renderSupportTab()}
-          {activeTab === 'certificates' && renderCertificatesTab()}
+
         </div>
       </div>
 
@@ -814,7 +725,13 @@ export function GovernmentHub() {
                 </div>
               </div>
               <div className="flex items-center gap-3">
-                <button className="flex-1 bg-orange-500 text-white py-3 rounded-lg hover:bg-orange-600 transition-colors">
+                <button 
+                  onClick={() => {
+                    alert(`Application submitted for ${selectedScheme.title}!\n\nYou will receive a confirmation email shortly.`);
+                    setSelectedScheme(null);
+                  }}
+                  className="flex-1 bg-orange-500 text-white py-3 rounded-lg hover:bg-orange-600 transition-colors"
+                >
                   Proceed to Application
                 </button>
                 <button 
@@ -822,6 +739,204 @@ export function GovernmentHub() {
                   className="px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
                 >
                   Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Upload Modal */}
+      {showUploadModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl max-w-md w-full">
+            <div className="p-6">
+              <h3 className="text-xl font-semibold mb-4">Upload Document</h3>
+              <input type="file" className="w-full p-3 border rounded-lg mb-4" />
+              <div className="flex gap-3">
+                <button 
+                  onClick={() => {
+                    alert('Document uploaded successfully!');
+                    setShowUploadModal(false);
+                  }}
+                  className="flex-1 bg-orange-500 text-white py-2 rounded-lg"
+                >
+                  Upload
+                </button>
+                <button 
+                  onClick={() => setShowUploadModal(false)}
+                  className="px-4 py-2 border rounded-lg"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+
+
+      {/* Application Modal */}
+      {showApplicationModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl max-w-lg w-full shadow-2xl">
+            <div className="p-8">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="p-3 bg-orange-100 rounded-full">
+                  <Send className="w-6 h-6 text-orange-600" />
+                </div>
+                <div>
+                  <h3 className="text-2xl font-bold text-gray-900">Quick Application</h3>
+                  <p className="text-gray-600">Select a scheme to start your application</p>
+                </div>
+              </div>
+              
+              <div className="mb-6">
+                <label className="block text-sm font-medium text-gray-700 mb-2">Available Schemes</label>
+                <select className="w-full p-4 border-2 border-gray-200 rounded-xl focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all">
+                  <option value="">Choose a government scheme...</option>
+                  {governmentSchemes.map(scheme => (
+                    <option key={scheme.id} value={scheme.id}>
+                      {scheme.title} - {scheme.amount}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              
+              <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6">
+                <div className="flex items-start gap-3">
+                  <div className="p-1 bg-blue-100 rounded-full">
+                    <AlertCircle className="w-4 h-4 text-blue-600" />
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-blue-900 text-sm">Quick Apply Benefits</h4>
+                    <p className="text-blue-700 text-sm mt-1">Pre-filled forms, faster processing, and priority support</p>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="flex gap-4">
+                <button 
+                  onClick={() => {
+                    alert('Application started! Redirecting to application form.');
+                    setShowApplicationModal(false);
+                  }}
+                  className="flex-1 bg-gradient-to-r from-orange-500 to-orange-600 text-white py-3 px-6 rounded-xl font-semibold hover:from-orange-600 hover:to-orange-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center justify-center gap-2"
+                >
+                  <Send className="w-5 h-5" />
+                  Start Application
+                </button>
+                <button 
+                  onClick={() => setShowApplicationModal(false)}
+                  className="px-6 py-3 border-2 border-gray-300 rounded-xl hover:bg-gray-50 transition-colors font-medium"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Chat Modal */}
+      {showChatModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl max-w-md w-full">
+            <div className="p-6">
+              <h3 className="text-xl font-semibold mb-4">Live Chat Support</h3>
+              <div className="bg-gray-50 p-4 rounded-lg mb-4 h-48 overflow-y-auto">
+                {chatMessages.map((message) => (
+                  <div key={message.id} className={`mb-3 ${message.sender === 'user' ? 'text-right' : 'text-left'}`}>
+                    <div className={`inline-block p-2 rounded-lg max-w-xs ${
+                      message.sender === 'user' 
+                        ? 'bg-orange-500 text-white' 
+                        : 'bg-white border text-gray-800'
+                    }`}>
+                      <p className="text-sm">{message.text}</p>
+                      <p className="text-xs opacity-70 mt-1">{message.time}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <input 
+                type="text" 
+                placeholder="Type your message..."
+                value={chatInput}
+                onChange={(e) => setChatInput(e.target.value)}
+                onKeyPress={(e) => {
+                  if (e.key === 'Enter') {
+                    if (chatInput.trim()) {
+                      const userMessage = {
+                        id: chatMessages.length + 1,
+                        sender: 'user',
+                        text: chatInput,
+                        time: new Date().toLocaleTimeString()
+                      };
+                      setChatMessages([...chatMessages, userMessage]);
+                      setChatInput('');
+                      
+                      setTimeout(() => {
+                        const responses = [
+                          'Thank you for your message. Let me help you with that.',
+                          'I understand your concern. Let me check that for you.',
+                          'That\'s a great question! Here\'s what I can tell you...',
+                          'I\'ll be happy to assist you with this matter.',
+                          'Let me connect you with the right department for this query.'
+                        ];
+                        const agentResponse = {
+                          id: chatMessages.length + 2,
+                          sender: 'agent',
+                          text: responses[Math.floor(Math.random() * responses.length)],
+                          time: new Date().toLocaleTimeString()
+                        };
+                        setChatMessages(prev => [...prev, agentResponse]);
+                      }, 1000);
+                    }
+                  }
+                }}
+                className="w-full p-3 border rounded-lg mb-4"
+              />
+              <div className="flex gap-3">
+                <button 
+                  onClick={() => {
+                    if (chatInput.trim()) {
+                      const userMessage = {
+                        id: chatMessages.length + 1,
+                        sender: 'user',
+                        text: chatInput,
+                        time: new Date().toLocaleTimeString()
+                      };
+                      setChatMessages([...chatMessages, userMessage]);
+                      setChatInput('');
+                      
+                      setTimeout(() => {
+                        const responses = [
+                          'Thank you for your message. Let me help you with that.',
+                          'I understand your concern. Let me check that for you.',
+                          'That\'s a great question! Here\'s what I can tell you...',
+                          'I\'ll be happy to assist you with this matter.',
+                          'Let me connect you with the right department for this query.'
+                        ];
+                        const agentResponse = {
+                          id: chatMessages.length + 2,
+                          sender: 'agent',
+                          text: responses[Math.floor(Math.random() * responses.length)],
+                          time: new Date().toLocaleTimeString()
+                        };
+                        setChatMessages(prev => [...prev, agentResponse]);
+                      }, 1000);
+                    }
+                  }}
+                  className="flex-1 bg-orange-500 text-white py-2 rounded-lg"
+                >
+                  Send
+                </button>
+                <button 
+                  onClick={() => setShowChatModal(false)}
+                  className="px-4 py-2 border rounded-lg"
+                >
+                  Close
                 </button>
               </div>
             </div>

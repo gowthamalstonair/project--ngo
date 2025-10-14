@@ -6,12 +6,13 @@ import {
 } from 'lucide-react';
 import { useDashboard } from '../../contexts/DashboardContext';
 import { useScrollReset } from '../../hooks/useScrollReset';
+// @ts-ignore
 import { donationAPI } from '../../utils/donationApi';
 
 export function DonorManagement() {
   useScrollReset();
   const { donations } = useDashboard();
-  const [recentDonations, setRecentDonations] = useState([]);
+  const [recentDonations, setRecentDonations] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
@@ -261,53 +262,53 @@ export function DonorManagement() {
           ) : (
             <div className="space-y-4">
               {recentDonations.length > 0 ? (
-                recentDonations.map((donation) => (
-                  <div key={donation.id} className="flex items-center gap-6 p-6 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+                recentDonations.map((donation: any) => (
+                  <div key={donation.id || Math.random()} className="flex items-center gap-6 p-6 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
                     <div className="w-16 h-16 rounded-full bg-orange-100 flex items-center justify-center">
                       <Gift className="w-8 h-8 text-orange-500" />
                     </div>
                     <div className="flex-1">
                       <div className="flex items-center gap-3 mb-2">
-                        <h3 className="text-lg font-semibold text-gray-900">{donation.donor_name}</h3>
-                        <span className={`px-2 py-1 text-xs rounded-full ${donation.donation_type === 'recurring' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'}`}>
-                          {donation.donation_type}
+                        <h3 className="text-lg font-semibold text-gray-900">{donation.donor_name || donation.donor || 'Unknown Donor'}</h3>
+                        <span className={`px-2 py-1 text-xs rounded-full ${(donation.donation_type || donation.type) === 'recurring' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'}`}>
+                          {donation.donation_type || donation.type || 'one-time'}
                         </span>
-                        <span className={`px-2 py-1 text-xs rounded-full ${getStatusColor(donation.status)}`}>
-                          {donation.status}
+                        <span className={`px-2 py-1 text-xs rounded-full ${getStatusColor(donation.status || 'pending')}`}>
+                          {donation.status || 'pending'}
                         </span>
                       </div>
                       <div className="flex items-center gap-6 text-sm text-gray-600 mb-3">
                         <div className="flex items-center gap-1">
                           <Calendar className="w-4 h-4" />
-                          Date: {new Date(donation.created_at).toLocaleDateString()}
+                          Date: {new Date(donation.created_at || donation.date || Date.now()).toLocaleDateString()}
                         </div>
                         <div className="flex items-center gap-1">
                           <Target className="w-4 h-4" />
-                          Type: {donation.donor_type}
+                          Type: {donation.donor_type || donation.donorType || 'Individual'}
                         </div>
-                        {donation.purpose && (
+                        {(donation.purpose || donation.project) && (
                           <div className="flex items-center gap-1">
                             <Target className="w-4 h-4" />
-                            Purpose: {donation.purpose}
+                            Purpose: {donation.purpose || donation.project}
                           </div>
                         )}
                       </div>
                       <div className="flex items-center gap-4">
                         <div className="text-sm">
                           <span className="text-gray-600">Amount: </span>
-                          <span className="font-semibold text-gray-900 text-lg">₹{parseFloat(donation.amount).toLocaleString()}</span>
+                          <span className="font-semibold text-gray-900 text-lg">₹{parseFloat(donation.amount || 0).toLocaleString()}</span>
                         </div>
                       </div>
                     </div>
                     <div className="flex items-center gap-3">
-                      {donation.donor_email && (
+                      {(donation.donor_email || donation.email) && (
                         <button className="p-2 text-gray-400 hover:text-gray-600 transition-colors">
                           <Mail className="w-5 h-5" />
                         </button>
                       )}
                       <button 
                         onClick={() => {
-                          window.history.pushState({}, '', `/donor-details?id=${donation.id}`);
+                          window.history.pushState({}, '', `/donor-details?id=${donation.id || Math.random()}`);
                           window.dispatchEvent(new PopStateEvent('popstate'));
                         }}
                         className="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 transition-colors"
