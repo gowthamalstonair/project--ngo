@@ -7,7 +7,7 @@ interface SignUpModalProps {
 }
 
 export function SignUpModal({ onClose }: SignUpModalProps) {
-  const [selectedRole, setSelectedRole] = useState<'staff' | 'leadership' | 'employee'>('staff');
+  const [selectedRole, setSelectedRole] = useState<'admin' | 'executive' | 'employee'>('admin');
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -55,8 +55,8 @@ export function SignUpModal({ onClose }: SignUpModalProps) {
       newErrors.address = 'Address is required';
     }
 
-    if (selectedRole === 'leadership' && !formData.organization.trim()) {
-      newErrors.organization = 'Organization is required for leadership role';
+    if (selectedRole === 'executive' && !formData.organization.trim()) {
+      newErrors.organization = 'Organization is required for executive role';
     }
 
     setErrors(newErrors);
@@ -108,14 +108,14 @@ export function SignUpModal({ onClose }: SignUpModalProps) {
 
   const roleOptions = [
     {
-      id: 'staff',
+      id: 'admin',
       title: 'Director',
       description: 'Lead programs, track donations, and monitor projects',
       icon: Users,
       color: 'text-blue-600'
     },
     {
-      id: 'leadership',
+      id: 'executive',
       title: 'Executive Director',
       description: 'Executive oversight, strategic planning, and organizational management',
       icon: Shield,
@@ -278,7 +278,7 @@ export function SignUpModal({ onClose }: SignUpModalProps) {
                 {errors.phone && <p className="text-red-600 text-sm mt-1">{errors.phone}</p>}
               </div>
 
-              {selectedRole === 'leadership' && (
+              {selectedRole === 'executive' && (
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     <Briefcase className="w-4 h-4 inline mr-2" />

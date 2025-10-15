@@ -39,14 +39,14 @@ export function Sidebar({ activeModule, setActiveModule }: SidebarProps) {
   const getMenuItems = () => {
     const baseItems = [
       { id: 'dashboard', label: 'Dashboard', icon: Home, available: true },
-      { id: 'donors', label: 'Donor Management', icon: Users, available: ['staff', 'leadership'].includes(user?.role || '') },
-      { id: 'finances', label: 'Financial Tracking', icon: IndianRupee, available: ['staff', 'leadership'].includes(user?.role || '') },
+      { id: 'donors', label: 'Donor Management', icon: Users, available: ['admin', 'executive'].includes(user?.role || '') },
+      { id: 'finances', label: 'Financial Tracking', icon: IndianRupee, available: ['admin', 'executive'].includes(user?.role || '') },
       { id: 'projects', label: 'Project Monitoring', icon: FolderOpen, available: true },
       { id: 'collaboration', label: 'Collaboration Hub', icon: Network, available: true },
-      { id: 'government', label: 'Government Hub', icon: Shield, available: true },
-      { id: 'hr', label: 'HR Management', icon: UserCheck, available: user?.role === 'leadership' },
-      { id: 'reports', label: 'Reports', icon: FileText, available: ['staff', 'leadership'].includes(user?.role || '') },
-      { id: 'RegisterNGO', label: 'Register NGO', icon: Users, available: ['staff', 'leadership'].includes(user?.role || '') },
+      { id: 'government', label: 'Government Hub', icon: Shield, available: ['admin', 'executive'].includes(user?.role || '') },
+      { id: 'hr', label: 'HR Management', icon: UserCheck, available: user?.role === 'executive' },
+      { id: 'reports', label: 'Reports', icon: FileText, available: ['admin', 'executive'].includes(user?.role || '') },
+      { id: 'RegisterNGO', label: 'Register NGO', icon: Users, available: ['admin', 'executive'].includes(user?.role || '') },
       { id: 'settings', label: 'Settings', icon: Settings, available: true },
     ];
 

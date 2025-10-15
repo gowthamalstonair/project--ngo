@@ -47,9 +47,14 @@ export function LoginModal({ onClose }: LoginModalProps) {
       return;
     }
 
-    const success = await login(email.trim(), password, selectedRole || '');
+    if (!selectedRole) {
+      setError('Please select a role first.');
+      return;
+    }
+
+    const success = await login(email.trim(), password, selectedRole);
     if (!success) {
-      setError('Invalid credentials. Please try again.');
+      setError(`Invalid credentials for ${selectedRole} role. Please check your email and try again.`);
     } else {
       window.location.href = roles.find(r => r.name === selectedRole)?.dashboard || '/';
     }
@@ -150,9 +155,19 @@ export function LoginModal({ onClose }: LoginModalProps) {
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-colors"
-                      placeholder="Enter your email"
+                      placeholder={selectedRole === 'Admin' ? 'admin@ngoindia.org' : 
+                                 selectedRole === 'Executive' ? 'executive@ngoindia.org' : 
+                                 selectedRole === 'Employee' ? 'employee@ngoindia.org' : 
+                                 'Enter your email'}
                       required
                     />
+                    {selectedRole && (
+                      <p className="text-xs text-gray-500 mt-1">
+                        Use {selectedRole === 'Admin' ? 'admin@ngoindia.org' : 
+                             selectedRole === 'Executive' ? 'executive@ngoindia.org' : 
+                             selectedRole === 'Employee' ? 'employee@ngoindia.org' : ''} for {selectedRole} login
+                      </p>
+                    )}
                   </div>
 
                   <div>

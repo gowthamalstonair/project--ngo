@@ -6,7 +6,7 @@ import {
 import { Bar, BarChart, CartesianGrid, Tooltip, XAxis, YAxis, PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 import { useDashboard } from '../../contexts/DashboardContext';
 
-export function StaffDashboard() {
+export function AdminDashboard() {
   const { donations, projects, expenses, tasks } = useDashboard();
 
   // --- Metrics ---

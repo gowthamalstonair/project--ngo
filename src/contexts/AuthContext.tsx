@@ -4,7 +4,7 @@ export interface User {
   id: string;
   name: string;
   email: string;
-  role: 'staff' | 'leadership' | 'employee';
+  role: 'admin' | 'executive' | 'employee';
   avatar?: string;
   profileImage?: string;
   department?: string;
@@ -17,7 +17,7 @@ export interface User {
 
 interface AuthContextType {
   user: User | null;
-  login: (email: string, password: string) => Promise<boolean>;
+  login: (email: string, password: string, selectedRole: string) => Promise<boolean>;
   register: (userData: RegisterData) => Promise<boolean>;
   logout: () => void;
   updateUser: (updates: Partial<User>) => void;
@@ -28,7 +28,7 @@ interface RegisterData {
   name: string;
   email: string;
   password: string;
-  role: 'staff' | 'leadership' | 'employee';
+  role: 'admin' | 'executive' | 'employee';
   phone: string;
   address: string;
   organization?: string;
@@ -74,8 +74,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         {
           id: '1',
           name: 'NGO India',
-          email: 'staff@ngoindia.org',
-          role: 'staff',
+          email: 'admin@ngoindia.org',
+          role: 'admin',
           department: 'Program Management',
           position: 'Director',
           phone: '+91 98765 43210',
@@ -86,8 +86,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         {
           id: '2',
           name: 'NGO India',
-          email: 'leadership@ngoindia.org',
-          role: 'leadership',
+          email: 'executive@ngoindia.org',
+          role: 'executive',
           department: 'Executive',
           position: 'Executive Director',
           phone: '+91 98765 43211',
@@ -122,14 +122,33 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setIsLoading(false);
   }, []);
 
-  const login = async (email: string, password: string): Promise<boolean> => {
+  // Define role-specific email validation
+  const validateRoleEmail = (email: string, selectedRole: string): boolean => {
+    const roleEmailMap: { [key: string]: string[] } = {
+      'admin': ['admin@ngoindia.org'],
+      'executive': ['executive@ngoindia.org'],
+      'employee': ['employee@ngoindia.org']
+      // Director role is excluded as requested
+    };
+    
+    const allowedEmails = roleEmailMap[selectedRole.toLowerCase()];
+    return allowedEmails ? allowedEmails.includes(email.toLowerCase()) : false;
+  };
+
+  const login = async (email: string, password: string, selectedRole: string): Promise<boolean> => {
     setIsLoading(true);
     
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 1000));
     
+    // First validate if the email is allowed for the selected role
+    if (!validateRoleEmail(email, selectedRole)) {
+      setIsLoading(false);
+      return false;
+    }
+    
     const users = getStoredUsers();
-    const foundUser = users.find(u => u.email === email);
+    const foundUser = users.find(u => u.email === email.toLowerCase() && u.role === selectedRole.toLowerCase());
     if (foundUser) {
       setUser(foundUser);
       storeCurrentUser(foundUser); // Save user to localStorage
@@ -166,10 +185,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         address: userData.address,
         organization: userData.organization || 'NGO India',
         experience: userData.experience,
-        department: userData.role === 'staff' ? 'Program Management' : 
-                   userData.role === 'leadership' ? 'Executive' : 'Field Operations',
-        position: userData.role === 'staff' ? 'Director' : 
-                 userData.role === 'leadership' ? 'Executive Director' : 'Employee',
+        department: userData.role === 'admin' ? 'Program Management' : 
+                   userData.role === 'executive' ? 'Executive' : 'Field Operations',
+        position: userData.role === 'admin' ? 'Director' : 
+                 userData.role === 'executive' ? 'Executive Director' : 'Employee',
         avatar: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=1'
       };
       
