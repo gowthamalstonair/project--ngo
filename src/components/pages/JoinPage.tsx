@@ -7,7 +7,7 @@ import {
 import { useAuth } from '../../contexts/AuthContext';
 
 export function JoinPage() {
-  const [selectedRole, setSelectedRole] = useState<'staff' | 'leadership' | 'employee'>('staff');
+  const [selectedRole, setSelectedRole] = useState<'admin' | 'executive' | 'employee'>('admin');
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -56,8 +56,8 @@ export function JoinPage() {
       newErrors.address = 'Address is required';
     }
 
-    if (selectedRole === 'leadership' && !formData.organization.trim()) {
-      newErrors.organization = 'Organization is required for leadership role';
+    if (selectedRole === 'executive' && !formData.organization.trim()) {
+      newErrors.organization = 'Organization is required for executive role';
     }
 
     setErrors(newErrors);
@@ -106,7 +106,7 @@ export function JoinPage() {
 
   const roleOptions = [
     {
-      id: 'staff',
+      id: 'admin',
       title: 'Director',
       description: 'Lead programs, track donations, and monitor projects',
       icon: Users,
@@ -114,7 +114,7 @@ export function JoinPage() {
       benefits: ['Access to donor management', 'Financial tracking tools', 'Project monitoring dashboard']
     },
     {
-      id: 'leadership',
+      id: 'executive',
       title: 'Executive Director',
       description: 'Executive oversight, strategic planning, and organizational management',
       icon: Shield,
@@ -351,7 +351,7 @@ export function JoinPage() {
                   {errors.phone && <p className="text-red-600 text-sm mt-1">{errors.phone}</p>}
                 </div>
 
-                {selectedRole === 'leadership' && (
+                {selectedRole === 'executive' && (
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       <Briefcase className="w-4 h-4 inline mr-2" />

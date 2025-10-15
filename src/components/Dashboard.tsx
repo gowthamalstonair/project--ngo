@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Sidebar } from './Sidebar';
-import { StaffDashboard } from './dashboards/StaffDashboard';
-import { LeadershipDashboard } from './dashboards/LeadershipDashboard';
+import { AdminDashboard } from './dashboards/AdminDashboard';
+import { LeadershipDashboard } from './dashboards/ExecutiveDashboard';
 import { EmployeeDashboard } from './dashboards/EmployeeDashboard';
 import { DonorManagement } from './modules/DonorManagement';
 import { FinancialTracking } from './modules/FinancialTracking';
@@ -66,14 +66,14 @@ export function Dashboard() {
     switch (activeModule) {
       case 'dashboard':
         switch (user?.role) {
-          case 'staff':
-            return <StaffDashboard />;
-          case 'leadership':
+          case 'admin':
+            return <AdminDashboard />;
+          case 'executive':
             return <LeadershipDashboard />;
           case 'employee':
             return <EmployeeDashboard />;
           default:
-            return <StaffDashboard />;
+            return <AdminDashboard />;
         }
       case 'donors':
         return <DonorManagement />;

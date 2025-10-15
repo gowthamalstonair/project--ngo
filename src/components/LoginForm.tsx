@@ -7,22 +7,22 @@ export function LoginForm() {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
-  const [selectedRole, setSelectedRole] = useState<'staff' | 'leadership' | 'employee'>('staff');
+  const [selectedRole, setSelectedRole] = useState<'admin' | 'executive' | 'employee'>('admin');
   const { login, isLoading } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     
-    const success = await login(email, password);
+    const success = await login(email, password, selectedRole);
     if (!success) {
       setError('Invalid email or password. Please try again.');
     }
   };
 
   const demoAccounts = [
-    { role: 'staff', email: 'staff@ngoindia.org', name: 'NGO India - Director' },
-    { role: 'leadership', email: 'leadership@ngoindia.org', name: 'NGO India - Executive Director' },
+    { role: 'admin', email: 'admin@ngoindia.org', name: 'NGO India - Director' },
+    { role: 'executive', email: 'executive@ngoindia.org', name: 'NGO India - Executive Director' },
     { role: 'employee', email: 'employee@ngoindia.org', name: 'NGO India - Employee' }
   ];
 
@@ -113,8 +113,8 @@ export function LoginForm() {
                 >
                   <div className="flex items-center gap-3">
                     <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                      {account.role === 'staff' && <Users className="w-4 h-4 text-blue-600" />}
-                      {account.role === 'leadership' && <Shield className="w-4 h-4 text-blue-600" />}
+                      {account.role === 'admin' && <Users className="w-4 h-4 text-blue-600" />}
+                      {account.role === 'executive' && <Shield className="w-4 h-4 text-blue-600" />}
                       {account.role === 'employee' && <Heart className="w-4 h-4 text-blue-600" />}
                     </div>
                     <div>
