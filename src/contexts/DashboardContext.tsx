@@ -20,6 +20,10 @@ export interface Project {
   startDate: string;
   endDate: string;
   description: string;
+  category?: string;
+  location?: string;
+  beneficiaries?: number;
+  objectives?: string;
 }
 
 export interface Expense {
@@ -71,6 +75,7 @@ interface DashboardContextType {
   addExpense: (expense: Omit<Expense, 'id'>) => void;
   addDonation: (donation: Omit<Donation, 'id' | 'project' | 'status'>) => void;
   updateProject: (id: string, updates: Partial<Project>) => void;
+  addProject: (project: Omit<Project, 'id'>) => void;
   addNGORegistration: (ngo: Omit<NGORegistration, 'id' | 'role' | 'date'>) => void;
 }
 
@@ -275,6 +280,18 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
     });
   };
 
+  const addProject = (project: Omit<Project, 'id'>) => {
+    const newProject: Project = {
+      ...project,
+      id: Date.now().toString()
+    };
+    setProjects(prev => {
+      const updated = [newProject, ...prev];
+      localStorage.setItem('projects', JSON.stringify(updated));
+      return updated;
+    });
+  };
+
   const addNGORegistration = (ngo: Omit<NGORegistration, 'id' | 'role' | 'date'>) => {
     const newNGO: NGORegistration = {
       ...ngo,
@@ -300,6 +317,7 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
       addExpense,
       addDonation,
       updateProject,
+      addProject,
       addNGORegistration
     }}>
       {children}

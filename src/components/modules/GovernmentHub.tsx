@@ -1,10 +1,8 @@
 import React, { useState } from 'react';
 import { 
-  Shield, FileText, Send, BarChart3, FolderOpen, 
-  Bell, HelpCircle, Award, Search, Filter, 
-  CheckCircle, Clock, AlertCircle, Download,
-  Upload, Eye, MessageSquare, Phone, Mail,
-  Calendar, MapPin, IndianRupee, Users, Star
+  Shield, FileText, Send, FolderOpen, Bell, HelpCircle, 
+  Search, CheckCircle, AlertCircle, Download, 
+  Eye, MessageSquare, Phone, Mail
 } from 'lucide-react';
 import { useScrollReset } from '../../hooks/useScrollReset';
 
@@ -12,9 +10,20 @@ export function GovernmentHub() {
   useScrollReset();
   const [activeTab, setActiveTab] = useState('verification');
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedScheme, setSelectedScheme] = useState<any>(null);
+  const [selectedScheme, setSelectedScheme] = useState<{
+    id: string;
+    title: string;
+    department: string;
+    category: string;
+    amount: string;
+    deadline: string;
+    status: string;
+    eligibility: string;
+    description: string;
+    documents: string[];
+    applicationFee: string;
+  } | null>(null);
   const [showUploadModal, setShowUploadModal] = useState(false);
-
   const [showApplicationModal, setShowApplicationModal] = useState(false);
   const [showChatModal, setShowChatModal] = useState(false);
   const [selectedFilter, setSelectedFilter] = useState('all');
@@ -22,13 +31,73 @@ export function GovernmentHub() {
     { id: 1, sender: 'agent', text: 'Hello! How can I help you today?', time: new Date().toLocaleTimeString() }
   ]);
   const [chatInput, setChatInput] = useState('');
+  const [notificationsList, setNotificationsList] = useState([
+    {
+      id: '1',
+      type: 'Application Update',
+      title: 'PM CARES Fund Application - Technical Review Completed',
+      message: 'Your application has passed technical review and moved to final approval stage.',
+      date: '2025-01-12',
+      read: false
+    },
+    {
+      id: '2',
+      type: 'Report Reminder',
+      title: 'Monthly Report Due Soon',
+      message: 'Your monthly progress report for Rural Healthcare Initiative is due in 3 days.',
+      date: '2025-01-11',
+      read: false
+    },
+    {
+      id: '3',
+      type: 'New Scheme',
+      title: 'New Grant Opportunity Available',
+      message: 'Education Ministry has announced new grants for skill development programs.',
+      date: '2025-01-10',
+      read: true
+    }
+  ]);
+
+  const handleMarkAllRead = () => {
+    setNotificationsList(prev => prev.map(notification => ({ ...notification, read: true })));
+  };
+
+  const handleSendMessage = () => {
+    if (!chatInput.trim()) return;
+    
+    const userMessage = {
+      id: Date.now(),
+      sender: 'user',
+      text: chatInput,
+      time: new Date().toLocaleTimeString()
+    };
+    setChatMessages(prev => [...prev, userMessage]);
+    setChatInput('');
+    
+    setTimeout(() => {
+      const responses = [
+        'Thank you for your message. Let me help you with that.',
+        'I understand your concern. Let me check that for you.',
+        'That\'s a great question! Here\'s what I can tell you...',
+        'I\'ll be happy to assist you with this matter.',
+        'Let me connect you with the right department for this query.'
+      ];
+      const agentResponse = {
+        id: Date.now() + 1,
+        sender: 'agent',
+        text: responses[Math.floor(Math.random() * responses.length)],
+        time: new Date().toLocaleTimeString()
+      };
+      setChatMessages(prev => [...prev, agentResponse]);
+    }, 1000);
+  };
 
   // Mock data for government schemes
   const governmentSchemes = [
     {
       id: '1',
       title: 'PM CARES Fund Grant',
-      department: 'Prime Minister\'s Office',
+      department: 'Prime Minister Office',
       category: 'Healthcare',
       amount: '₹50,00,000',
       deadline: '2025-03-15',
@@ -88,6 +157,7 @@ export function GovernmentHub() {
       scheme: 'PM CARES Fund Grant',
       submittedDate: '2024-12-10',
       amount: '₹50,00,000',
+      status: 'Under Review',
       reviewStage: 'Technical Evaluation',
       nextAction: 'Awaiting technical committee review'
     },
@@ -96,43 +166,21 @@ export function GovernmentHub() {
       scheme: 'Swachh Bharat Mission Grant',
       submittedDate: '2024-11-25',
       amount: '₹25,00,000',
+      status: 'Approved',
       reviewStage: 'Completed',
       nextAction: 'Fund disbursement in progress'
     }
   ];
 
-  // Mock notifications
-  const notifications = [
-    {
-      id: '1',
-      type: 'Application Update',
-      title: 'PM CARES Fund Application - Technical Review Completed',
-      message: 'Your application has passed technical review and moved to final approval stage.',
-      date: '2025-01-12',
-      priority: 'High',
-      read: false
-    },
-    {
-      id: '2',
-      type: 'Report Reminder',
-      title: 'Monthly Report Due Soon',
-      message: 'Your monthly progress report for Rural Healthcare Initiative is due in 3 days.',
-      date: '2025-01-11',
-      priority: 'Medium',
-      read: false
-    },
-    {
-      id: '3',
-      type: 'New Scheme',
-      title: 'New Grant Opportunity Available',
-      message: 'Education Ministry has announced new grants for skill development programs.',
-      date: '2025-01-10',
-      priority: 'Low',
-      read: true
-    }
+  // Mock documents data
+  const documents = [
+    { name: 'Registration Certificate', type: 'PDF', size: '2.4 MB', date: '2024-12-01', shared: true },
+    { name: 'Audited Financial Report 2024', type: 'PDF', size: '5.2 MB', date: '2024-11-15', shared: false },
+    { name: 'Project Proposal - Healthcare', type: 'DOCX', size: '1.8 MB', date: '2024-12-10', shared: true },
+    { name: 'Impact Assessment Report', type: 'PDF', size: '3.1 MB', date: '2024-12-05', shared: false },
+    { name: 'Budget Utilization Report', type: 'XLSX', size: '890 KB', date: '2024-11-28', shared: true },
+    { name: 'Compliance Certificate', type: 'PDF', size: '1.2 MB', date: '2024-12-12', shared: true }
   ];
-
-
 
   const renderVerificationTab = () => (
     <div className="space-y-6">
@@ -342,9 +390,6 @@ export function GovernmentHub() {
                 </div>
               </div>
             </div>
-
-
-
             <div className="flex items-center gap-2">
               <button 
                 onClick={() => alert(`Application Details:\n\nID: ${app.id}\nScheme: ${app.scheme}\nStatus: ${app.status}\nAmount: ${app.amount}\nStage: ${app.reviewStage}\nNext Action: ${app.nextAction}`)}
@@ -370,8 +415,6 @@ export function GovernmentHub() {
     </div>
   );
 
-
-
   const renderDocumentsTab = () => (
     <div className="space-y-6">
       <div className="flex items-center justify-between mb-6">
@@ -385,14 +428,7 @@ export function GovernmentHub() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {[
-          { name: 'Registration Certificate', type: 'PDF', size: '2.4 MB', date: '2024-12-01', shared: true },
-          { name: 'Audited Financial Report 2024', type: 'PDF', size: '5.2 MB', date: '2024-11-15', shared: false },
-          { name: 'Project Proposal - Healthcare', type: 'DOCX', size: '1.8 MB', date: '2024-12-10', shared: true },
-          { name: 'Impact Assessment Report', type: 'PDF', size: '3.1 MB', date: '2024-12-05', shared: false },
-          { name: 'Budget Utilization Report', type: 'XLSX', size: '890 KB', date: '2024-11-28', shared: true },
-          { name: 'Compliance Certificate', type: 'PDF', size: '1.2 MB', date: '2024-12-12', shared: true }
-        ].map((doc, index) => (
+        {documents.map((doc, index) => (
           <div key={index} className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
             <div className="flex items-start gap-3 mb-4">
               <div className="p-2 bg-orange-100 rounded-lg">
@@ -419,17 +455,9 @@ export function GovernmentHub() {
 
             <div className="flex items-center gap-2">
               <button 
-                onClick={() => setShowUploadModal(true)}
-                className="px-3 py-2 text-sm bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
-              >
-                <Upload className="w-4 h-4 mr-1 inline" />
-                Upload
-              </button>
-              <button 
                 onClick={() => alert(`Document Preview:\n\nName: ${doc.name}\nType: ${doc.type}\nSize: ${doc.size}\nUploaded: ${doc.date}\nStatus: ${doc.shared ? 'Shared with government' : 'Private'}`)}
-                className="px-3 py-2 text-sm text-orange-600 hover:text-orange-700 transition-colors"
+                className="px-3 py-1 text-sm text-orange-600 hover:text-orange-700 transition-colors"
               >
-                <Eye className="w-4 h-4 mr-1 inline" />
                 View
               </button>
               <button 
@@ -439,9 +467,8 @@ export function GovernmentHub() {
                   link.download = doc.name.toLowerCase().replace(/\s+/g, '-') + '.txt';
                   link.click();
                 }}
-                className="px-3 py-2 text-sm bg-orange-500 text-white rounded hover:bg-orange-600 transition-colors"
+                className="px-3 py-1 text-sm bg-orange-500 text-white rounded hover:bg-orange-600 transition-colors"
               >
-                <Download className="w-4 h-4 mr-1 inline" />
                 Download
               </button>
             </div>
@@ -456,7 +483,7 @@ export function GovernmentHub() {
       <div className="flex items-center justify-between mb-6">
         <h3 className="text-xl font-semibold text-gray-900">Notifications & Communication</h3>
         <button 
-          onClick={() => alert('All notifications marked as read!')}
+          onClick={handleMarkAllRead}
           className="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 transition-colors"
         >
           Mark All Read
@@ -464,7 +491,7 @@ export function GovernmentHub() {
       </div>
 
       <div className="space-y-4">
-        {notifications.map((notification) => (
+        {notificationsList.map((notification) => (
           <div key={notification.id} className={`bg-white rounded-xl shadow-sm border p-6 ${
             !notification.read ? 'border-orange-200 bg-orange-50' : 'border-gray-100'
           }`}>
@@ -511,7 +538,7 @@ export function GovernmentHub() {
           <h3 className="font-semibold text-gray-900 mb-2">Phone Support</h3>
           <p className="text-gray-600 mb-4">Get immediate help from our support team</p>
           <button 
-            onClick={() => window.open('tel:+918068447416', '_self')}
+            onClick={() => window.open('tel:+91XXXXXXXXXX', '_self')}
             className="font-semibold text-blue-600 hover:text-blue-700 transition-colors cursor-pointer"
           >
             +91 8068447416
@@ -589,13 +616,9 @@ export function GovernmentHub() {
     </div>
   );
 
-
-
   const stats = [
     { label: 'Active Schemes', value: '24', icon: FileText, color: 'text-blue-600' },
-    { label: 'Applications Submitted', value: '8', icon: Send, color: 'text-green-600' },
-
-
+    { label: 'Applications Submitted', value: '8', icon: Send, color: 'text-green-600' }
   ];
 
   return (
@@ -674,11 +697,9 @@ export function GovernmentHub() {
           {activeTab === 'verification' && renderVerificationTab()}
           {activeTab === 'schemes' && renderSchemesTab()}
           {activeTab === 'applications' && renderApplicationsTab()}
-
           {activeTab === 'documents' && renderDocumentsTab()}
           {activeTab === 'notifications' && renderNotificationsTab()}
           {activeTab === 'support' && renderSupportTab()}
-
         </div>
       </div>
 
@@ -756,16 +777,15 @@ export function GovernmentHub() {
               <div className="flex gap-3">
                 <button 
                   onClick={() => {
-                    alert('Document uploaded successfully!');
                     setShowUploadModal(false);
                   }}
-                  className="flex-1 bg-orange-500 text-white py-2 rounded-lg"
+                  className="flex-1 bg-orange-500 text-white py-2 rounded-lg hover:bg-orange-600 transition-colors"
                 >
                   Upload
                 </button>
                 <button 
                   onClick={() => setShowUploadModal(false)}
-                  className="px-4 py-2 border rounded-lg"
+                  className="px-4 py-2 border rounded-lg hover:bg-gray-50 transition-colors"
                 >
                   Cancel
                 </button>
@@ -774,8 +794,6 @@ export function GovernmentHub() {
           </div>
         </div>
       )}
-
-
 
       {/* Application Modal */}
       {showApplicationModal && (
@@ -798,7 +816,7 @@ export function GovernmentHub() {
                   <option value="">Choose a government scheme...</option>
                   {governmentSchemes.map(scheme => (
                     <option key={scheme.id} value={scheme.id}>
-                      {scheme.title} - {scheme.amount}
+                      {scheme.title}
                     </option>
                   ))}
                 </select>
@@ -864,70 +882,17 @@ export function GovernmentHub() {
                 placeholder="Type your message..."
                 value={chatInput}
                 onChange={(e) => setChatInput(e.target.value)}
-                onKeyPress={(e) => {
-                  if (e.key === 'Enter') {
-                    if (chatInput.trim()) {
-                      const userMessage = {
-                        id: chatMessages.length + 1,
-                        sender: 'user',
-                        text: chatInput,
-                        time: new Date().toLocaleTimeString()
-                      };
-                      setChatMessages([...chatMessages, userMessage]);
-                      setChatInput('');
-                      
-                      setTimeout(() => {
-                        const responses = [
-                          'Thank you for your message. Let me help you with that.',
-                          'I understand your concern. Let me check that for you.',
-                          'That\'s a great question! Here\'s what I can tell you...',
-                          'I\'ll be happy to assist you with this matter.',
-                          'Let me connect you with the right department for this query.'
-                        ];
-                        const agentResponse = {
-                          id: chatMessages.length + 2,
-                          sender: 'agent',
-                          text: responses[Math.floor(Math.random() * responses.length)],
-                          time: new Date().toLocaleTimeString()
-                        };
-                        setChatMessages(prev => [...prev, agentResponse]);
-                      }, 1000);
-                    }
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    handleSendMessage();
                   }
                 }}
                 className="w-full p-3 border rounded-lg mb-4"
               />
               <div className="flex gap-3">
                 <button 
-                  onClick={() => {
-                    if (chatInput.trim()) {
-                      const userMessage = {
-                        id: chatMessages.length + 1,
-                        sender: 'user',
-                        text: chatInput,
-                        time: new Date().toLocaleTimeString()
-                      };
-                      setChatMessages([...chatMessages, userMessage]);
-                      setChatInput('');
-                      
-                      setTimeout(() => {
-                        const responses = [
-                          'Thank you for your message. Let me help you with that.',
-                          'I understand your concern. Let me check that for you.',
-                          'That\'s a great question! Here\'s what I can tell you...',
-                          'I\'ll be happy to assist you with this matter.',
-                          'Let me connect you with the right department for this query.'
-                        ];
-                        const agentResponse = {
-                          id: chatMessages.length + 2,
-                          sender: 'agent',
-                          text: responses[Math.floor(Math.random() * responses.length)],
-                          time: new Date().toLocaleTimeString()
-                        };
-                        setChatMessages(prev => [...prev, agentResponse]);
-                      }, 1000);
-                    }
-                  }}
+                  onClick={handleSendMessage}
                   className="flex-1 bg-orange-500 text-white py-2 rounded-lg"
                 >
                   Send

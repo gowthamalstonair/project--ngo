@@ -3,7 +3,7 @@ import {
   BookOpen, Search, ExternalLink, Globe, Users,
   Heart, Award, Target, MapPin, Phone, Mail,
   Calendar, TrendingUp, Info, Star, ArrowLeft,
-  Download, Eye, Filter, SortAsc, SortDesc
+  Download, Eye, Filter, SortAsc, SortDesc, Plus, X, Upload
 } from 'lucide-react';
 import { DocumentViewer } from './DocumentViewer';
 
@@ -60,6 +60,10 @@ export function KnowledgeHub() {
   const pageSize = 8;
   const [isLoading, setIsLoading] = useState(false);
   const [viewingDocument, setViewingDocument] = useState<string | null>(null);
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [documents, setDocuments] = useState<NGODocument[]>([]);
+  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+  const [calculatedPages, setCalculatedPages] = useState<number>(0);
 
   const handleBack = () => {
     window.history.back();
@@ -77,8 +81,18 @@ export function KnowledgeHub() {
     return () => window.removeEventListener('popstate', handlePopState);
   }, []);
 
+  // Initialize documents from localStorage or use default data
+  useEffect(() => {
+    const saved = localStorage.getItem('ngoDocuments');
+    if (saved) {
+      setDocuments(JSON.parse(saved));
+    } else {
+      setDocuments(initialDocuments);
+    }
+  }, []);
+
   // Curated NGO document seeds (replace href with actual report links when integrating)
-  const ngoDocuments: NGODocument[] = [
+  const initialDocuments: NGODocument[] = [
     {
       id: '1',
       title: 'Annual Report 2023-24 — Akshaya Patra',
@@ -248,7 +262,7 @@ export function KnowledgeHub() {
 
   const filtered = useMemo(() => {
     const term = searchTerm.trim().toLowerCase();
-    const base = ngoDocuments.filter((doc) => {
+    const base = documents.filter((doc) => {
       const matchesSearch =
         !term ||
         doc.title.toLowerCase().includes(term) ||
@@ -277,7 +291,7 @@ export function KnowledgeHub() {
     });
 
     return sorted;
-  }, [ngoDocuments, searchTerm, selectedCategory, selectedType, sortKey, sortDir]);
+  }, [documents, searchTerm, selectedCategory, selectedType, sortKey, sortDir]);
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
   const paged = useMemo(() => {
@@ -296,7 +310,7 @@ export function KnowledgeHub() {
   }, [searchTerm, selectedCategory, selectedType]);
 
   const stats = [
-    { label: 'Total Documents', value: ngoDocuments.length.toString(), icon: BookOpen, color: 'text-blue-600' },
+    { label: 'Total Documents', value: documents.length.toString(), icon: BookOpen, color: 'text-blue-600' },
     { label: 'Categories', value: (categories.length - 1).toString(), icon: Target, color: 'text-green-600' },
     { label: 'Total Downloads', value: '10K+', icon: Download, color: 'text-purple-600' },
     { label: 'Active NGOs', value: '6', icon: Users, color: 'text-orange-600' },
@@ -307,6 +321,13 @@ export function KnowledgeHub() {
   };
 
   const handleViewDocument = (doc: NGODocument) => {
+    // Update view count
+    const updatedDocs = documents.map(d => 
+      d.id === doc.id ? { ...d, views: d.views + 1 } : d
+    );
+    setDocuments(updatedDocs);
+    localStorage.setItem('ngoDocuments', JSON.stringify(updatedDocs));
+    
     setViewingDocument(doc.id);
   };
 
@@ -315,28 +336,64 @@ export function KnowledgeHub() {
   };
 
   const handleDownloadDocument = (doc: NGODocument) => {
-    // Create a mock PDF download
     const fileName = `${doc.title.replace(/[^a-zA-Z0-9]/g, '_')}.pdf`;
-    
-    // Create a blob with mock PDF content
     const pdfContent = `%PDF-1.4\n1 0 obj\n<<\n/Type /Catalog\n/Pages 2 0 R\n>>\nendobj\n2 0 obj\n<<\n/Type /Pages\n/Kids [3 0 R]\n/Count 1\n>>\nendobj\n3 0 obj\n<<\n/Type /Page\n/Parent 2 0 R\n/MediaBox [0 0 612 792]\n/Contents 4 0 R\n>>\nendobj\n4 0 obj\n<<\n/Length 44\n>>\nstream\nBT\n/F1 12 Tf\n100 700 Td\n(${doc.title}) Tj\nET\nendstream\nendobj\nxref\n0 5\n0000000000 65535 f \n0000000009 00000 n \n0000000058 00000 n \n0000000115 00000 n \n0000000204 00000 n \ntrailer\n<<\n/Size 5\n/Root 1 0 R\n>>\nstartxref\n297\n%%EOF`;
     
     const blob = new Blob([pdfContent], { type: 'application/pdf' });
     const url = URL.createObjectURL(blob);
-    
-    // Create download link
     const link = document.createElement('a');
     link.href = url;
     link.download = fileName;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-    
-    // Clean up
     URL.revokeObjectURL(url);
     
-    // Show success message
+    // Update download count
+    const updatedDocs = documents.map(d => 
+      d.id === doc.id ? { ...d, downloads: d.downloads + 1 } : d
+    );
+    setDocuments(updatedDocs);
+    localStorage.setItem('ngoDocuments', JSON.stringify(updatedDocs));
+    
     alert(`Downloaded: ${doc.title}`);
+  };
+
+  const handleFileUpload = async (file: File) => {
+    setUploadedFile(file);
+    // Mock page calculation - in real implementation, use PDF.js or similar
+    const mockPages = Math.floor(Math.random() * 100) + 20;
+    setCalculatedPages(mockPages);
+  };
+
+  const handleAddDocument = (formData: any) => {
+    const fileSize = uploadedFile ? `${(uploadedFile.size / (1024 * 1024)).toFixed(1)} MB` : '2.5 MB';
+    
+    const newDoc: NGODocument & { content?: string } = {
+      id: Date.now().toString(),
+      title: formData.title,
+      ngoName: formData.ngoName,
+      category: formData.category,
+      type: formData.type,
+      size: fileSize,
+      pages: calculatedPages || 50,
+      uploadDate: new Date().toISOString().split('T')[0],
+      downloads: 0,
+      views: 0,
+      image: formData.image || fallbackImg,
+      description: formData.description,
+      tags: formData.tags.split(',').map((tag: string) => tag.trim()),
+      href: '#',
+      content: `This ${formData.type.toLowerCase()} from ${formData.ngoName} provides comprehensive information about ${formData.description}. The document contains ${calculatedPages || 50} pages of detailed analysis and insights.`
+    };
+    
+    const updatedDocs = [newDoc, ...documents];
+    setDocuments(updatedDocs);
+    localStorage.setItem('ngoDocuments', JSON.stringify(updatedDocs));
+    setShowAddModal(false);
+    setUploadedFile(null);
+    setCalculatedPages(0);
+    alert('Document added successfully!');
   };
 
   // Show document viewer if a document is selected
@@ -361,6 +418,13 @@ export function KnowledgeHub() {
             <BookOpen className="w-8 h-8 text-orange-500" />
             <h1 className="text-3xl font-bold text-gray-900">NGO Document Library</h1>
           </div>
+          <button 
+            onClick={() => setShowAddModal(true)}
+            className="flex items-center gap-2 px-6 py-3 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors font-medium focus:outline-none focus:ring-2 focus:ring-orange-500 shadow-sm"
+          >
+            <Plus className="w-4 h-4" />
+            Add Document
+          </button>
         </div>
         <p className="text-gray-600 text-lg">
           Discover and access comprehensive reports and documents from NGOs across India.
@@ -639,6 +703,92 @@ export function KnowledgeHub() {
           )}
         </div>
       </div>
+
+      {/* Add Document Modal */}
+      {showAddModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-6 border-b border-gray-200">
+              <div className="flex items-center justify-between">
+                <h2 className="text-xl font-semibold text-gray-900">Add New Document</h2>
+                <button 
+                  onClick={() => setShowAddModal(false)}
+                  className="p-2 hover:bg-gray-100 rounded-lg"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+            </div>
+            <form onSubmit={(e) => {
+              e.preventDefault();
+              const formData = new FormData(e.currentTarget);
+              const data = Object.fromEntries(formData.entries());
+              handleAddDocument(data);
+            }} className="p-6 space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Document Title *</label>
+                <input name="title" type="text" required className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-orange-500" />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">NGO Name *</label>
+                <input name="ngoName" type="text" required className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-orange-500" />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Category *</label>
+                  <select name="category" required className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-orange-500">
+                    {categories.slice(1).map(cat => <option key={cat} value={cat}>{cat}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Document Type *</label>
+                  <select name="type" required className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-orange-500">
+                    {documentTypes.slice(1).map(type => <option key={type} value={type}>{type}</option>)}
+                  </select>
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Description *</label>
+                <textarea name="description" required rows={3} className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-orange-500"></textarea>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Upload Document *</label>
+                <input 
+                  type="file" 
+                  accept=".pdf,.doc,.docx" 
+                  onChange={(e) => e.target.files?.[0] && handleFileUpload(e.target.files[0])}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-orange-500" 
+                  required
+                />
+                {uploadedFile && (
+                  <div className="mt-2 text-sm text-gray-600">
+                    <p>File: {uploadedFile.name}</p>
+                    <p>Size: {(uploadedFile.size / (1024 * 1024)).toFixed(1)} MB</p>
+                    <p>Pages: {calculatedPages} (auto-calculated)</p>
+                  </div>
+                )}
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Tags (comma-separated)</label>
+                <input name="tags" type="text" placeholder="e.g., Education, Impact, Annual" className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-orange-500" />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Cover Image URL</label>
+                <input name="image" type="url" placeholder="https://example.com/image.jpg" className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-orange-500" />
+              </div>
+              <div className="flex justify-end gap-3 pt-4">
+                <button type="button" onClick={() => setShowAddModal(false)} className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50">
+                  Cancel
+                </button>
+                <button type="submit" className="px-6 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 flex items-center gap-2">
+                  <Upload className="w-4 h-4" />
+                  Add Document
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

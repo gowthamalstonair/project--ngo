@@ -8,138 +8,9 @@ interface DocumentViewerProps {
 
 export function DocumentViewer({ documentId, onBack }: DocumentViewerProps): JSX.Element {
   const getDocumentById = (id: string) => {
-    const documents = {
-      '1': {
-        id: '1',
-        title: 'Annual Report 2023-24 — Akshaya Patra',
-        ngoName: 'Akshaya Patra Foundation',
-        category: 'Education & Nutrition',
-        type: 'Annual Report',
-        size: '7.9 MB',
-        pages: 120,
-        uploadDate: '2024-12-15',
-        downloads: 2187,
-        views: 5620,
-        image: 'https://images.unsplash.com/photo-1606761568499-6d2451b23c66?q=80&w=1200&auto=format&fit=crop',
-        description: 'Comprehensive annual review of the world\'s largest NGO-run mid-day meals program, including governance, reach, and audited financials for FY 2024.',
-        tags: ['Financial', 'Impact', 'Annual', 'Mid-Day Meals'],
-        content: 'Executive Summary: The Akshaya Patra Foundation continues to be the world\'s largest NGO-run mid-day meal program, serving over 2 million children across 12 states in India. This annual report presents our achievements, challenges, and financial overview for the fiscal year 2023-24.'
-      },
-      '2': {
-        id: '2',
-        title: 'Teach For India — Impact Overview 2024',
-        ngoName: 'Teach For India',
-        category: 'Education',
-        type: 'Impact Report',
-        size: '3.8 MB',
-        pages: 44,
-        uploadDate: '2024-11-20',
-        downloads: 1092,
-        views: 2765,
-        image: 'https://images.unsplash.com/photo-1588072432836-e10032774350?q=80&w=1200&auto=format&fit=crop',
-        description: 'Evidence of student learning outcomes, leadership pipeline growth, and community impact across major cities, aligned with TFI\'s 2032 strategy.',
-        tags: ['Education', 'Assessment', 'Performance', 'Leadership'],
-        content: 'Program Overview: Teach For India works to eliminate educational inequity by developing leaders who ensure that all children attain an excellent education. This impact report covers our achievements and learnings from 2024.'
-      },
-      '3': {
-        id: '3',
-        title: 'Disaster Relief & Dignity — Goonj 2024',
-        ngoName: 'Goonj',
-        category: 'Rural Development',
-        type: 'Project Report',
-        size: '5.2 MB',
-        pages: 68,
-        uploadDate: '2024-10-05',
-        downloads: 1734,
-        views: 3894,
-        image: 'https://images.unsplash.com/photo-1520975922284-9e0ce9c4d77e?q=80&w=1200&auto=format&fit=crop',
-        description: 'Field documentation of relief responses and community-led rebuilding through materials as a resource, including "Cloth for Work."',
-        tags: ['Disaster', 'Relief', 'Community', 'Rural'],
-        content: 'Project Overview: Goonj works on disaster relief and dignity through community-led rebuilding initiatives. This report documents our relief responses and the innovative "Cloth for Work" program that transforms urban waste into rural development resources.'
-      },
-      '4': {
-        id: '4',
-        title: 'Smile Foundation — Health Progress Q3 FY24',
-        ngoName: 'Smile Foundation',
-        category: 'Healthcare',
-        type: 'Progress Report',
-        size: '2.3 MB',
-        pages: 42,
-        uploadDate: '2024-09-12',
-        downloads: 865,
-        views: 2120,
-        image: 'https://images.unsplash.com/photo-1584515933487-779824d29309?q=80&w=1200&auto=format&fit=crop',
-        description: 'Quarterly outcomes from mobile health units, community screenings, and program coverage across multiple states.',
-        tags: ['Healthcare', 'Progress', 'Community Health'],
-        content: 'Health Progress Report: Our mobile health units have reached over 50,000 beneficiaries this quarter. Community screenings have identified and treated various health conditions, with special focus on maternal and child health in underserved areas.'
-      },
-      '5': {
-        id: '5',
-        title: 'CRY — Child Rights Program 2024',
-        ngoName: 'CRY - Child Rights and You',
-        category: 'Child Welfare',
-        type: 'Program Report',
-        size: '3.4 MB',
-        pages: 56,
-        uploadDate: '2024-08-28',
-        downloads: 1290,
-        views: 2952,
-        image: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?q=80&w=1200&auto=format&fit=crop',
-        description: 'Protection, education, and health interventions for children, with program snapshots, case studies, and reach metrics.',
-        tags: ['Child Rights', 'Protection', 'Advocacy'],
-        content: 'Child Rights Program: CRY continues to work towards ensuring every child has access to education, healthcare, and protection from exploitation. This report highlights our interventions across 19 states, reaching over 750,000 children directly.'
-      },
-      '6': {
-        id: '6',
-        title: 'Pratham — Literacy Program Analysis 2024',
-        ngoName: 'Pratham',
-        category: 'Education',
-        type: 'Research Paper',
-        size: '4.6 MB',
-        pages: 72,
-        uploadDate: '2024-07-15',
-        downloads: 744,
-        views: 1627,
-        image: 'https://images.unsplash.com/photo-1516979187457-637abb4f9353?q=80&w=1200&auto=format&fit=crop',
-        description: 'Methodologies and outcomes from foundational literacy programs, with longitudinal insights and rural-urban comparisons.',
-        tags: ['Literacy', 'Research', 'Education'],
-        content: 'Literacy Research: This comprehensive analysis examines the effectiveness of our foundational literacy programs across rural and urban settings. Our research shows significant improvement in reading levels among children aged 6-14 years.'
-      },
-      '7': {
-        id: '7',
-        title: 'Women Empowerment Initiative 2024',
-        ngoName: 'Smile Foundation',
-        category: 'Healthcare',
-        type: 'Initiative Report',
-        size: '2.0 MB',
-        pages: 38,
-        uploadDate: '2024-06-22',
-        downloads: 712,
-        views: 1704,
-        image: 'https://images.unsplash.com/photo-1534067783941-51c9c23ecefd?q=80&w=1200&auto=format&fit=crop',
-        description: 'Skill development and community health empowerment initiatives focusing on women\'s livelihoods and agency.',
-        tags: ['Women', 'Empowerment', 'Skills'],
-        content: 'Women Empowerment: Our initiative focuses on skill development and community health empowerment for women. Through vocational training and health awareness programs, we have empowered over 15,000 women across 8 states.'
-      },
-      '8': {
-        id: '8',
-        title: 'Rural Development Strategy — Goonj',
-        ngoName: 'Goonj',
-        category: 'Rural Development',
-        type: 'Strategy Document',
-        size: '3.1 MB',
-        pages: 51,
-        uploadDate: '2024-05-30',
-        downloads: 903,
-        views: 2011,
-        image: 'https://images.unsplash.com/photo-1509098681029-b45e9c845022?q=80&w=1200&auto=format&fit=crop',
-        description: 'Strategic framework for community-led rural development and dignity-centric material mobilization.',
-        tags: ['Rural', 'Strategy', 'Development'],
-        content: 'Rural Development Strategy: This document outlines our strategic framework for community-led rural development. Our approach focuses on dignity-centric material mobilization, where urban waste is converted into rural development resources through community participation.'
-      }
-    };
-    
-    return documents[id as keyof typeof documents] || null;
+    const savedDocs = localStorage.getItem('ngoDocuments');
+    const documents = savedDocs ? JSON.parse(savedDocs) : [];
+    return documents.find((doc: any) => doc.id === id) || null;
   };
 
   const doc = getDocumentById(documentId);
@@ -164,7 +35,7 @@ export function DocumentViewer({ documentId, onBack }: DocumentViewerProps): JSX
 
   const handleDownload = () => {
     const fileName = doc.title.replace(/[^a-zA-Z0-9]/g, '_') + '.pdf';
-    const pdfContent = 'Mock PDF content for ' + doc.title;
+    const pdfContent = `%PDF-1.4\n1 0 obj\n<<\n/Type /Catalog\n/Pages 2 0 R\n>>\nendobj\n2 0 obj\n<<\n/Type /Pages\n/Kids [3 0 R]\n/Count 1\n>>\nendobj\n3 0 obj\n<<\n/Type /Page\n/Parent 2 0 R\n/MediaBox [0 0 612 792]\n/Contents 4 0 R\n>>\nendobj\n4 0 obj\n<<\n/Length 44\n>>\nstream\nBT\n/F1 12 Tf\n100 700 Td\n(${doc.title}) Tj\nET\nendstream\nendobj\nxref\n0 5\n0000000000 65535 f \n0000000009 00000 n \n0000000058 00000 n \n0000000115 00000 n \n0000000204 00000 n \ntrailer\n<<\n/Size 5\n/Root 1 0 R\n>>\nstartxref\n297\n%%EOF`;
     
     const blob = new Blob([pdfContent], { type: 'application/pdf' });
     const url = URL.createObjectURL(blob);
@@ -320,7 +191,7 @@ export function DocumentViewer({ documentId, onBack }: DocumentViewerProps): JSX
                 </div>
                 
                 <div className="document-content">
-                  <p>{doc.content}</p>
+                  <p>{doc.content || 'This document contains detailed information about ' + doc.description}</p>
                 </div>
               </div>
             </div>

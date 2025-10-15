@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Heart, Shield, Users, AlertCircle, Eye, EyeOff, X } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
+import { Captcha } from './Captcha';
 
 interface LoginModalProps {
   onClose: () => void;
@@ -11,11 +12,17 @@ export function LoginModal({ onClose }: LoginModalProps) {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
+  const [captchaValid, setCaptchaValid] = useState(false);
   const { login, isLoading } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    
+    if (!captchaValid) {
+      setError('Please complete the captcha verification.');
+      return;
+    }
     
     const success = await login(email, password);
     if (!success) {
@@ -87,6 +94,8 @@ export function LoginModal({ onClose }: LoginModalProps) {
               </div>
             </div>
 
+            <Captcha onVerify={setCaptchaValid} />
+
             {error && (
               <div className="flex items-center gap-2 text-red-600 text-sm bg-red-50 p-3 rounded-lg">
                 <AlertCircle className="w-4 h-4" />
@@ -96,7 +105,7 @@ export function LoginModal({ onClose }: LoginModalProps) {
 
             <button
               type="submit"
-              disabled={isLoading}
+              disabled={isLoading || !captchaValid}
               className="w-full bg-orange-500 text-white py-3 rounded-lg font-semibold hover:bg-orange-600 focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isLoading ? 'Signing in...' : 'Sign In'}
