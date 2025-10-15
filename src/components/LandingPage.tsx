@@ -152,7 +152,7 @@ export function LandingPage() {
                 onClick={() => setShowLoginModal(true)}
                 className="border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors font-medium w-full md:w-auto"
               >
-                Staff Login
+                Login
               </button>
             </div>
           </div>
