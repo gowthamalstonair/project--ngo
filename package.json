@@ -12,6 +12,8 @@
     "dev:full": "concurrently \"npm run backend\" \"npm run dev\""
   },
   "dependencies": {
+    "@nivo/bar": "^0.99.0",
+    "@nivo/pie": "^0.99.0",
     "@types/react-router-dom": "^5.3.3",
     "axios": "^1.12.2",
     "body-parser": "^2.2.0",

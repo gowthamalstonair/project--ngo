@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import { useDashboard } from '../../contexts/DashboardContext';
 import { useScrollReset } from '../../hooks/useScrollReset';
+import { formatNumber } from '../../utils/formatNumber';
 
 export function DonorManagement() {
   useScrollReset();
@@ -76,28 +77,28 @@ export function DonorManagement() {
   const stats = [
     {
       label: 'Total Donations',
-      value: recentDonations.length.toString(),
+      value: formatNumber(recentDonations.length),
       change: '+12%',
       icon: Gift,
       color: 'text-blue-600'
     },
     {
       label: 'Completed',
-      value: recentDonations.filter(d => d.status === 'completed').length.toString(),
+      value: formatNumber(recentDonations.filter(d => d.status === 'completed').length),
       change: '+8%',
       icon: Heart,
       color: 'text-green-600'
     },
     {
       label: 'Total Amount',
-      value: `₹${(recentDonations.reduce((sum, d) => sum + d.amount, 0) / 100000).toFixed(1)}L`,
+      value: `₹${formatNumber(recentDonations.reduce((sum, d) => sum + d.amount, 0))}`,
       change: '+15%',
       icon: IndianRupee,
       color: 'text-orange-600'
     },
     {
       label: 'Avg. Donation',
-      value: `₹${recentDonations.length > 0 ? (recentDonations.reduce((sum, d) => sum + d.amount, 0) / recentDonations.length).toLocaleString() : '0'}`,
+      value: `₹${recentDonations.length > 0 ? formatNumber(recentDonations.reduce((sum, d) => sum + d.amount, 0) / recentDonations.length) : '0'}`,
       change: '+3%',
       icon: TrendingUp,
       color: 'text-purple-600'
@@ -240,7 +241,7 @@ export function DonorManagement() {
         <div className="p-6">
           <div className="space-y-4">
               {recentDonations.length > 0 ? (
-                recentDonations.map((donation: any) => (
+                filteredDonations.map((donation: any) => (
                   <div key={donation.id || Math.random()} className="flex items-center gap-6 p-6 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
                     <div className="w-16 h-16 rounded-full bg-orange-100 flex items-center justify-center">
                       <Gift className="w-8 h-8 text-orange-500" />
@@ -335,7 +336,7 @@ export function DonorManagement() {
                   />
                   <div className="flex-1">
                     <h3 className="font-semibold text-gray-900">{donor.name}</h3>
-                    <p className="text-sm text-gray-600">₹{(donor.totalDonated / 100000).toFixed(1)}L donated</p>
+                    <p className="text-sm text-gray-600">₹{formatNumber(donor.totalDonated)} donated</p>
                   </div>
                   <Award className="w-5 h-5 text-yellow-500" />
                 </div>
@@ -351,7 +352,9 @@ export function DonorManagement() {
           <div className="p-6">
             <div className="space-y-6">
               <div className="text-center">
-                <div className="text-3xl font-bold text-gray-900 mb-2">₹{(donors.reduce((sum, d) => sum + d.totalDonated, 0) / 100000).toFixed(1)}L</div>
+                <div className="text-3xl font-bold text-gray-900 mb-2">
+                  ₹{formatNumber(donors.reduce((sum, d) => sum + d.totalDonated, 0))}
+                </div>
                 <p className="text-gray-600">Total Donations This Year</p>
               </div>
               <div className="space-y-4">
