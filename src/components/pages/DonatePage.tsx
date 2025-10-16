@@ -8,12 +8,18 @@ import {
   BookOpen, Stethoscope, Droplets, Utensils,
   GraduationCap, HandHeart, Star, Quote
 } from 'lucide-react';
+import { formatNumber } from '../../utils/formatNumber';
 
 export function DonatePage() {
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
     name: '',
+    mobile: '',
     email: '',
+    address: '',
+    country: '',
+    city: '',
+    pincode: '',
     panCard: '',
     category: 'money',
     amount: '',
@@ -52,16 +58,36 @@ export function DonatePage() {
       newErrors.name = 'Name is required';
     }
 
+    if (!formData.mobile.trim()) {
+      newErrors.mobile = 'Mobile number is required';
+    }
+
     if (!formData.email.trim()) {
       newErrors.email = 'Email is required';
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
       newErrors.email = 'Please enter a valid email address';
     }
 
+    if (!formData.address.trim()) {
+      newErrors.address = 'Address is required';
+    }
+
+    if (!formData.country.trim()) {
+      newErrors.country = 'Country is required';
+    }
+
+    if (!formData.city.trim()) {
+      newErrors.city = 'City is required';
+    }
+
+    if (!formData.pincode.trim()) {
+      newErrors.pincode = 'Pincode is required';
+    }
+
     if (!formData.panCard.trim()) {
-      newErrors.panCard = 'PAN card is required';
+      newErrors.panCard = 'PAN number is required';
     } else if (!/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(formData.panCard)) {
-      newErrors.panCard = 'Please enter a valid PAN card number';
+      newErrors.panCard = 'Please enter a valid PAN number';
     }
 
     if (formData.category === 'money') {
@@ -187,7 +213,7 @@ export function DonatePage() {
       // Create comprehensive email content with receipt
       const emailContent = {
         to: formData.email,
-        from: 'grants@ngoindia.org',
+        from: 'noreply@ngoindia.org',
         subject: 'Thank You for Your Generous Donation - NGO INDIA Receipt',
         html: `
           <!DOCTYPE html>
@@ -390,7 +416,7 @@ export function DonatePage() {
             </div>
             <h1 className="text-4xl font-bold text-gray-900 mb-4">Thank You!</h1>
             <p className="text-xl text-gray-600 mb-8">
-              Your generous donation {formData.category === 'money' ? `of ₹${formData.amount}` : 'of items'} has been received successfully.
+              Your generous donation {formData.category === 'money' ? `of ₹${formatNumber(Number(formData.amount))}` : 'of items'} has been received successfully.
             </p>
             
             {/* Receipt Section */}
@@ -759,26 +785,113 @@ export function DonatePage() {
 
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
-                        <Mail className="w-4 h-4 inline mr-2" />
-                        Email Address *
+                        <Phone className="w-4 h-4 inline mr-2" />
+                        Mobile No *
                       </label>
                       <input
-                        type="email"
-                        value={formData.email}
-                        onChange={(e) => handleInputChange('email', e.target.value)}
+                        type="tel"
+                        value={formData.mobile}
+                        onChange={(e) => handleInputChange('mobile', e.target.value)}
                         className={`w-full px-4 py-3 rounded-lg border transition-colors ${
-                          errors.email ? 'border-red-300 focus:ring-red-500' : 'border-gray-300 focus:ring-orange-500'
+                          errors.mobile ? 'border-red-300 focus:ring-red-500' : 'border-gray-300 focus:ring-orange-500'
                         } focus:ring-2 focus:border-transparent`}
-                        placeholder="Enter your email address"
+                        placeholder="Enter your mobile number"
                       />
-                      {errors.email && <p className="text-red-600 text-sm mt-1">{errors.email}</p>}
+                      {errors.mobile && <p className="text-red-600 text-sm mt-1">{errors.mobile}</p>}
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <Mail className="w-4 h-4 inline mr-2" />
+                      Email Address *
+                    </label>
+                    <input
+                      type="email"
+                      value={formData.email}
+                      onChange={(e) => handleInputChange('email', e.target.value)}
+                      className={`w-full px-4 py-3 rounded-lg border transition-colors ${
+                        errors.email ? 'border-red-300 focus:ring-red-500' : 'border-gray-300 focus:ring-orange-500'
+                      } focus:ring-2 focus:border-transparent`}
+                      placeholder="Enter your email address"
+                    />
+                    {errors.email && <p className="text-red-600 text-sm mt-1">{errors.email}</p>}
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <MapPin className="w-4 h-4 inline mr-2" />
+                      Address *
+                    </label>
+                    <textarea
+                      value={formData.address}
+                      onChange={(e) => handleInputChange('address', e.target.value)}
+                      rows={3}
+                      className={`w-full px-4 py-3 rounded-lg border transition-colors ${
+                        errors.address ? 'border-red-300 focus:ring-red-500' : 'border-gray-300 focus:ring-orange-500'
+                      } focus:ring-2 focus:border-transparent`}
+                      placeholder="Enter your address"
+                    />
+                    {errors.address && <p className="text-red-600 text-sm mt-1">{errors.address}</p>}
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <Building className="w-4 h-4 inline mr-2" />
+                        Country *
+                      </label>
+                      <input
+                        type="text"
+                        value={formData.country}
+                        onChange={(e) => handleInputChange('country', e.target.value)}
+                        className={`w-full px-4 py-3 rounded-lg border transition-colors ${
+                          errors.country ? 'border-red-300 focus:ring-red-500' : 'border-gray-300 focus:ring-orange-500'
+                        } focus:ring-2 focus:border-transparent`}
+                        placeholder="Enter country"
+                      />
+                      {errors.country && <p className="text-red-600 text-sm mt-1">{errors.country}</p>}
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <MapPin className="w-4 h-4 inline mr-2" />
+                        City *
+                      </label>
+                      <input
+                        type="text"
+                        value={formData.city}
+                        onChange={(e) => handleInputChange('city', e.target.value)}
+                        className={`w-full px-4 py-3 rounded-lg border transition-colors ${
+                          errors.city ? 'border-red-300 focus:ring-red-500' : 'border-gray-300 focus:ring-orange-500'
+                        } focus:ring-2 focus:border-transparent`}
+                        placeholder="Enter city"
+                      />
+                      {errors.city && <p className="text-red-600 text-sm mt-1">{errors.city}</p>}
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <MapPin className="w-4 h-4 inline mr-2" />
+                        Pincode *
+                      </label>
+                      <input
+                        type="text"
+                        value={formData.pincode}
+                        onChange={(e) => handleInputChange('pincode', e.target.value)}
+                        className={`w-full px-4 py-3 rounded-lg border transition-colors ${
+                          errors.pincode ? 'border-red-300 focus:ring-red-500' : 'border-gray-300 focus:ring-orange-500'
+                        } focus:ring-2 focus:border-transparent`}
+                        placeholder="Enter pincode"
+                      />
+                      {errors.pincode && <p className="text-red-600 text-sm mt-1">{errors.pincode}</p>}
                     </div>
                   </div>
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       <PanIcon className="w-4 h-4 inline mr-2" />
-                      PAN Card *
+                      PAN Number *
                     </label>
                     <input
                       type="text"
@@ -787,7 +900,7 @@ export function DonatePage() {
                       className={`w-full px-4 py-3 rounded-lg border transition-colors ${
                         errors.panCard ? 'border-red-300 focus:ring-red-500' : 'border-gray-300 focus:ring-orange-500'
                       } focus:ring-2 focus:border-transparent`}
-                      placeholder="Enter PAN card number (e.g., ABCDE1234F)"
+                      placeholder="Enter PAN number (e.g., ABCDE1234F)"
                       maxLength={10}
                     />
                     {errors.panCard && <p className="text-red-600 text-sm mt-1">{errors.panCard}</p>}
@@ -844,7 +957,7 @@ export function DonatePage() {
                                 : 'border-gray-200 hover:border-gray-300'
                             }`}
                           >
-                            ₹{amount}
+                            ₹{formatNumber(amount)}
                           </button>
                         ))}
                       </div>
@@ -947,21 +1060,218 @@ export function DonatePage() {
                     </select>
                   </div>
 
+                  {/* Family Member Details */}
+                  {formData.donorType === 'family' && (
+                    <div className="bg-blue-50 p-6 rounded-xl space-y-4">
+                      <h3 className="text-lg font-semibold text-gray-900 mb-4">Family Member Details</h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">Family Member Name *</label>
+                          <input
+                            type="text"
+                            value={formData.familyMemberName}
+                            onChange={(e) => handleInputChange('familyMemberName', e.target.value)}
+                            className={`w-full px-4 py-3 rounded-lg border transition-colors ${
+                              errors.familyMemberName ? 'border-red-300 focus:ring-red-500' : 'border-gray-300 focus:ring-orange-500'
+                            } focus:ring-2 focus:border-transparent`}
+                            placeholder="Enter family member name"
+                          />
+                          {errors.familyMemberName && <p className="text-red-600 text-sm mt-1">{errors.familyMemberName}</p>}
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">Relation *</label>
+                          <input
+                            type="text"
+                            value={formData.familyMemberRelation}
+                            onChange={(e) => handleInputChange('familyMemberRelation', e.target.value)}
+                            className={`w-full px-4 py-3 rounded-lg border transition-colors ${
+                              errors.familyMemberRelation ? 'border-red-300 focus:ring-red-500' : 'border-gray-300 focus:ring-orange-500'
+                            } focus:ring-2 focus:border-transparent`}
+                            placeholder="e.g., Father, Mother, Spouse"
+                          />
+                          {errors.familyMemberRelation && <p className="text-red-600 text-sm mt-1">{errors.familyMemberRelation}</p>}
+                        </div>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Contact Number</label>
+                        <input
+                          type="tel"
+                          value={formData.familyMemberContact}
+                          onChange={(e) => handleInputChange('familyMemberContact', e.target.value)}
+                          className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-colors"
+                          placeholder="Enter contact number"
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Affiliated Details */}
+                  {formData.donorType === 'affiliated' && (
+                    <div className="bg-green-50 p-6 rounded-xl space-y-4">
+                      <h3 className="text-lg font-semibold text-gray-900 mb-4">Affiliated Details</h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">Organization Name *</label>
+                          <input
+                            type="text"
+                            value={formData.affiliatedOrganization}
+                            onChange={(e) => handleInputChange('affiliatedOrganization', e.target.value)}
+                            className={`w-full px-4 py-3 rounded-lg border transition-colors ${
+                              errors.affiliatedOrganization ? 'border-red-300 focus:ring-red-500' : 'border-gray-300 focus:ring-orange-500'
+                            } focus:ring-2 focus:border-transparent`}
+                            placeholder="Enter organization name"
+                          />
+                          {errors.affiliatedOrganization && <p className="text-red-600 text-sm mt-1">{errors.affiliatedOrganization}</p>}
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">Position *</label>
+                          <input
+                            type="text"
+                            value={formData.affiliatedPosition}
+                            onChange={(e) => handleInputChange('affiliatedPosition', e.target.value)}
+                            className={`w-full px-4 py-3 rounded-lg border transition-colors ${
+                              errors.affiliatedPosition ? 'border-red-300 focus:ring-red-500' : 'border-gray-300 focus:ring-orange-500'
+                            } focus:ring-2 focus:border-transparent`}
+                            placeholder="Enter your position"
+                          />
+                          {errors.affiliatedPosition && <p className="text-red-600 text-sm mt-1">{errors.affiliatedPosition}</p>}
+                        </div>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Contact Number</label>
+                        <input
+                          type="tel"
+                          value={formData.affiliatedContact}
+                          onChange={(e) => handleInputChange('affiliatedContact', e.target.value)}
+                          className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-colors"
+                          placeholder="Enter contact number"
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Corporate Details */}
+                  {formData.donorType === 'corporate' && (
+                    <div className="bg-purple-50 p-6 rounded-xl space-y-4">
+                      <h3 className="text-lg font-semibold text-gray-900 mb-4">Corporate Details</h3>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Corporate Name *</label>
+                        <input
+                          type="text"
+                          value={formData.corporateName}
+                          onChange={(e) => handleInputChange('corporateName', e.target.value)}
+                          className={`w-full px-4 py-3 rounded-lg border transition-colors ${
+                            errors.corporateName ? 'border-red-300 focus:ring-red-500' : 'border-gray-300 focus:ring-orange-500'
+                          } focus:ring-2 focus:border-transparent`}
+                          placeholder="Enter corporate name"
+                        />
+                        {errors.corporateName && <p className="text-red-600 text-sm mt-1">{errors.corporateName}</p>}
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Corporate Address *</label>
+                        <textarea
+                          value={formData.corporateAddress}
+                          onChange={(e) => handleInputChange('corporateAddress', e.target.value)}
+                          rows={3}
+                          className={`w-full px-4 py-3 rounded-lg border transition-colors ${
+                            errors.corporateAddress ? 'border-red-300 focus:ring-red-500' : 'border-gray-300 focus:ring-orange-500'
+                          } focus:ring-2 focus:border-transparent`}
+                          placeholder="Enter corporate address"
+                        />
+                        {errors.corporateAddress && <p className="text-red-600 text-sm mt-1">{errors.corporateAddress}</p>}
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">Contact Number</label>
+                          <input
+                            type="tel"
+                            value={formData.corporateContact}
+                            onChange={(e) => handleInputChange('corporateContact', e.target.value)}
+                            className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-colors"
+                            placeholder="Enter contact number"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">GST Number</label>
+                          <input
+                            type="text"
+                            value={formData.corporateGST}
+                            onChange={(e) => handleInputChange('corporateGST', e.target.value)}
+                            className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-colors"
+                            placeholder="Enter GST number"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Grant/Foundation Details */}
+                  {formData.donorType === 'grant' && (
+                    <div className="bg-yellow-50 p-6 rounded-xl space-y-4">
+                      <h3 className="text-lg font-semibold text-gray-900 mb-4">Grant/Foundation Details</h3>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Foundation Name *</label>
+                        <input
+                          type="text"
+                          value={formData.foundationName}
+                          onChange={(e) => handleInputChange('foundationName', e.target.value)}
+                          className={`w-full px-4 py-3 rounded-lg border transition-colors ${
+                            errors.foundationName ? 'border-red-300 focus:ring-red-500' : 'border-gray-300 focus:ring-orange-500'
+                          } focus:ring-2 focus:border-transparent`}
+                          placeholder="Enter foundation name"
+                        />
+                        {errors.foundationName && <p className="text-red-600 text-sm mt-1">{errors.foundationName}</p>}
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Foundation Address *</label>
+                        <textarea
+                          value={formData.foundationAddress}
+                          onChange={(e) => handleInputChange('foundationAddress', e.target.value)}
+                          rows={3}
+                          className={`w-full px-4 py-3 rounded-lg border transition-colors ${
+                            errors.foundationAddress ? 'border-red-300 focus:ring-red-500' : 'border-gray-300 focus:ring-orange-500'
+                          } focus:ring-2 focus:border-transparent`}
+                          placeholder="Enter foundation address"
+                        />
+                        {errors.foundationAddress && <p className="text-red-600 text-sm mt-1">{errors.foundationAddress}</p>}
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">Contact Number</label>
+                          <input
+                            type="tel"
+                            value={formData.foundationContact}
+                            onChange={(e) => handleInputChange('foundationContact', e.target.value)}
+                            className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-colors"
+                            placeholder="Enter contact number"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">Registration Number</label>
+                          <input
+                            type="text"
+                            value={formData.foundationRegistration}
+                            onChange={(e) => handleInputChange('foundationRegistration', e.target.value)}
+                            className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-colors"
+                            placeholder="Enter registration number"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       <Target className="w-4 h-4 inline mr-2" />
-                      Purpose *
+                      Purpose
                     </label>
                     <input
                       type="text"
                       value={formData.purpose}
                       onChange={(e) => handleInputChange('purpose', e.target.value)}
-                      className={`w-full px-4 py-3 rounded-lg border transition-colors ${
-                        errors.purpose ? 'border-red-300 focus:ring-red-500' : 'border-gray-300 focus:ring-orange-500'
-                      } focus:ring-2 focus:border-transparent`}
+                      className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-colors"
                       placeholder="Enter the purpose of your donation"
                     />
-                    {errors.purpose && <p className="text-red-600 text-sm mt-1">{errors.purpose}</p>}
                   </div>
 
                   <div>
@@ -1019,7 +1329,7 @@ export function DonatePage() {
                       <span className="font-medium text-gray-900">{formData.email}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-gray-600">PAN Card:</span>
+                      <span className="text-gray-600">PAN Number:</span>
                       <span className="font-medium text-gray-900">{formData.panCard}</span>
                     </div>
                     <div className="flex justify-between">

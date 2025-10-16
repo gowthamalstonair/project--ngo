@@ -98,7 +98,7 @@ export function Chatbot({ isOpen, onToggle }: ChatbotProps) {
     
     // Contact information
     if (message.includes('contact') || message.includes('phone') || message.includes('email') || message.includes('address') || message.includes('reach')) {
-      return "📞 **Contact NGO INDIA:**\n\n📧 **Email:** info@ngoindia.org\n📱 **Phone:** +91 11 4567 8900\n📍 **Address:** New Delhi, India\n\n🌐 **Connect with us:**\n• Website: Browse our programs and impact stories\n• Social Media: Follow our latest updates\n• Newsletter: Subscribe for monthly impact reports\n\nOur team is always ready to help! What would you like to discuss?";
+      return "📞 **Contact NGO INDIA:**\n\n📧 **Email:** grants@ngoindia.org\n📱 **Phone:** +91 8068447416\n📍 **Address:** Bengaluru, India\n\n🌐 **Connect with us:**\n• Website: Browse our programs and impact stories\n• Social Media: Follow our latest updates\n• Newsletter: Subscribe for monthly impact reports\n\nOur team is always ready to help! What would you like to discuss?";
     }
     
     // Payment methods
@@ -113,7 +113,7 @@ export function Chatbot({ isOpen, onToggle }: ChatbotProps) {
     
     // Location and areas served
     if (message.includes('location') || message.includes('where') || message.includes('area') || message.includes('state')) {
-      return "📍 **Areas We Serve:**\n\n🎓 **Education Programs:**\n• Rajasthan, Uttar Pradesh, Bihar\n\n🏥 **Healthcare Services:**\n• Maharashtra, Karnataka\n\n👩 **Women Empowerment:**\n• Gujarat, Madhya Pradesh\n\n🌾 **Rural Development:**\n• Multiple states across India\n\n**Headquarters:** New Delhi, India\n\nWe're expanding our reach to serve more communities across India!";
+      return "📍 **Areas We Serve:**\n\n🎓 **Education Programs:**\n• Rajasthan, Uttar Pradesh, Bihar\n\n🏥 **Healthcare Services:**\n• Maharashtra, Karnataka\n\n👩 **Women Empowerment:**\n• Gujarat, Madhya Pradesh\n\n🌾 **Rural Development:**\n• Multiple states across India\n\n**Headquarters:** Bengaluru, India\n\nWe're expanding our reach to serve more communities across India!";
     }
     
     // Transparency and accountability

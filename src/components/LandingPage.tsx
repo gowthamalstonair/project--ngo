@@ -100,7 +100,12 @@ export function LandingPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row items-center md:justify-between h-auto md:h-16 py-2 md:py-0">
             <div className="flex items-start md:items-center md:justify-start gap-3 w-full md:w-auto mb-2 md:mb-0">
-              <img src="/ngo india logo.png" alt="NGO INDIA Logo" className="w-40 h-28 rounded-lg" />
+              <img 
+                src="/ngo india logo.png" 
+                alt="NGO INDIA Logo" 
+                className="w-40 h-28 rounded-lg cursor-pointer" 
+                onClick={() => window.location.href = '/'}
+              />
             </div>
             <nav className="flex flex-col md:flex-row items-center space-y-2 md:space-y-0 md:space-x-8 w-full md:w-auto justify-center md:justify-start mb-2 md:mb-0">
               <a href="#about-ngo" className="text-gray-700 hover:text-orange-600 font-medium transition-colors">About</a>
@@ -494,7 +499,12 @@ export function LandingPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 items-start">
             <div className="flex flex-col items-start">
               <div className="flex items-center gap-3 mb-6">
-                <img src="/ngo india logo.png" alt="NGO INDIA Logo" className="w-40 h-30 rounded-lg" />
+                <img 
+                  src="/ngo india logo.png" 
+                  alt="NGO INDIA Logo" 
+                  className="w-40 h-30 rounded-lg cursor-pointer" 
+                  onClick={() => window.location.href = '/'}
+                />
                 {/* Removed text logo, keep only image */}
               </div>
               <p className="text-gray-400 leading-relaxed">
