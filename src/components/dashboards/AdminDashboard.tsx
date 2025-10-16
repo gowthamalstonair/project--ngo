@@ -68,11 +68,19 @@ export function AdminDashboard() {
   const categoryColors = ['#f97316', '#3b82f6', '#10b981'];
 
   // --- Recent Activities ---
-  const recentActivities = [
+  const dynamicActivities = donations.slice(0, 3).map(donation => ({
+    message: `Received ₹${donation.amount.toLocaleString()} from ${donation.donor}`,
+    time: new Date(donation.date).toLocaleDateString(),
+    status: donation.status
+  }));
+  
+  const staticActivities = [
     { message: 'Received ₹5,00,000 from Tata Foundation', time: '2h ago', status: 'success' },
     { message: 'New volunteer John Smith registered', time: '1d ago', status: 'pending' },
     { message: 'Donor meeting scheduled with Acme Corp.', time: '3d ago', status: 'completed' }
   ];
+  
+  const recentActivities = [...dynamicActivities, ...staticActivities].slice(0, 5);
 
   return (
     <div className="p-8 max-w-7xl mx-auto">

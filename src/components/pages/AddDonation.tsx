@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { ArrowLeft, IndianRupee } from 'lucide-react';
 import { useDashboard } from '../../contexts/DashboardContext';
-import { donationAPI } from '../../utils/donationApi';
 
 export function AddDonation() {
   const { addDonation } = useDashboard();
@@ -18,21 +17,7 @@ export function AddDonation() {
     e.preventDefault();
     
     try {
-      // Prepare data for backend
-      const donationData = {
-        donor_name: formData.donorName,
-        donor_email: formData.donorEmail,
-        donor_type: formData.donationType,
-        amount: parseFloat(formData.amount),
-        donation_type: formData.donationType === 'Grant' ? 'recurring' : 'one-time',
-        purpose: formData.purpose,
-        notes: formData.notes
-      };
-
-      // Send to backend
-      const response = await donationAPI.addDonation(donationData);
-      
-      // Also update local context for immediate UI update
+      // Add donation to local context
       addDonation({
         donor: formData.donorName,
         amount: parseFloat(formData.amount),
@@ -42,7 +27,6 @@ export function AddDonation() {
       
       alert('Donation added successfully!');
       setTimeout(() => {
-        localStorage.setItem('activeModule', 'donors');
         window.location.href = '/';
       }, 1000);
     } catch (error) {

@@ -6,33 +6,17 @@ import {
 } from 'lucide-react';
 import { useDashboard } from '../../contexts/DashboardContext';
 import { useScrollReset } from '../../hooks/useScrollReset';
-// @ts-ignore
-import { donationAPI } from '../../utils/donationApi';
 
 export function DonorManagement() {
   useScrollReset();
   const { donations } = useDashboard();
-  const [recentDonations, setRecentDonations] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [showSuggestions, setShowSuggestions] = useState(false);
 
-  // Fetch recent donations from backend
-  useEffect(() => {
-    const fetchRecentDonations = async () => {
-      try {
-        const data = await donationAPI.getAllDonations();
-        setRecentDonations(data);
-      } catch (error) {
-        console.error('Error fetching recent donations:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchRecentDonations();
-  }, []);
+  // Use context donations directly
+  const recentDonations = donations;
 
   const donors = [
     {
@@ -92,28 +76,28 @@ export function DonorManagement() {
   const stats = [
     {
       label: 'Total Donations',
-      value: donations.length.toString(),
+      value: recentDonations.length.toString(),
       change: '+12%',
       icon: Gift,
       color: 'text-blue-600'
     },
     {
       label: 'Completed',
-      value: donations.filter(d => d.status === 'completed').length.toString(),
+      value: recentDonations.filter(d => d.status === 'completed').length.toString(),
       change: '+8%',
       icon: Heart,
       color: 'text-green-600'
     },
     {
       label: 'Total Amount',
-      value: `₹${(donations.reduce((sum, d) => sum + d.amount, 0) / 100000).toFixed(1)}L`,
+      value: `₹${(recentDonations.reduce((sum, d) => sum + d.amount, 0) / 100000).toFixed(1)}L`,
       change: '+15%',
       icon: IndianRupee,
       color: 'text-orange-600'
     },
     {
       label: 'Avg. Donation',
-      value: `₹${donations.length > 0 ? (donations.reduce((sum, d) => sum + d.amount, 0) / donations.length).toLocaleString() : '0'}`,
+      value: `₹${recentDonations.length > 0 ? (recentDonations.reduce((sum, d) => sum + d.amount, 0) / recentDonations.length).toLocaleString() : '0'}`,
       change: '+3%',
       icon: TrendingUp,
       color: 'text-purple-600'
@@ -138,16 +122,16 @@ export function DonorManagement() {
     }
   };
 
-  const filteredDonations = donations.filter(donation => {
-    const matchesSearch = donation.donor.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         donation.project.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = selectedCategory === 'all' || donation.type === selectedCategory;
+  const filteredDonations = recentDonations.filter(donation => {
+    const matchesSearch = (donation.donor || donation.donor_name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         (donation.project || donation.purpose || '').toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesCategory = selectedCategory === 'all' || (donation.type || donation.donation_type) === selectedCategory;
     return matchesSearch && matchesCategory;
   });
 
   // Get unique donor names for suggestions
-  const donorSuggestions = [...new Set(donations.map(d => d.donor))]
-    .filter(donor => donor.toLowerCase().includes(searchTerm.toLowerCase()) && searchTerm.length > 0)
+  const donorSuggestions = [...new Set(recentDonations.map(d => d.donor || d.donor_name))]
+    .filter(donor => donor && donor.toLowerCase().includes(searchTerm.toLowerCase()) && searchTerm.length > 0)
     .slice(0, 5);
 
   return (
@@ -254,13 +238,7 @@ export function DonorManagement() {
           <h2 className="text-xl font-semibold text-gray-900">Recent Donations</h2>
         </div>
         <div className="p-6">
-          {loading ? (
-            <div className="text-center py-8">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mx-auto"></div>
-              <p className="text-gray-600 mt-4">Loading donations...</p>
-            </div>
-          ) : (
-            <div className="space-y-4">
+          <div className="space-y-4">
               {recentDonations.length > 0 ? (
                 recentDonations.map((donation: any) => (
                   <div key={donation.id || Math.random()} className="flex items-center gap-6 p-6 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
@@ -333,8 +311,7 @@ export function DonorManagement() {
                   </button>
                 </div>
               )}
-            </div>
-          )}
+          </div>
         </div>
       </div>
 
