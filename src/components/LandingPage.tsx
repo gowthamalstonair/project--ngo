@@ -9,6 +9,7 @@ import { LoginModal } from './LoginModal';
 import { SignUpModal } from './SignUpModal';
 import { DonationPage } from './DonationPage';
 import { motion } from 'framer-motion';
+import { formatNumber } from '../utils/formatNumber';
 
 export function LandingPage() {
   const [showLoginModal, setShowLoginModal] = useState(false);
@@ -16,10 +17,10 @@ export function LandingPage() {
   const [showDonationPage, setShowDonationPage] = useState(false);
 
   const stats = [
-    { value: '50,000+', label: 'Lives Impacted', icon: Heart },
-    { value: '150+', label: 'Villages Reached', icon: MapPin },
-    { value: '₹2.5Cr+', label: 'Funds Raised', icon: TrendingUp },
-    { value: '25+', label: 'Active Projects', icon: Target }
+    { value: formatNumber(50000) + '+', label: 'Lives Impacted', icon: Heart },
+    { value: formatNumber(150) + '+', label: 'Villages Reached', icon: MapPin },
+    { value: '₹' + formatNumber(25000000) + '+', label: 'Funds Raised', icon: TrendingUp },
+    { value: formatNumber(25) + '+', label: 'Active Projects', icon: Target }
   ];
 
   const features = [
@@ -72,7 +73,7 @@ export function LandingPage() {
       description: 'Providing quality education to underprivileged children across rural India',
       image: 'https://images.pexels.com/photos/8613089/pexels-photo-8613089.jpeg?auto=compress&cs=tinysrgb&w=400&h=250&dpr=1',
       progress: 75,
-      beneficiaries: '5,000+ children',
+      beneficiaries: formatNumber(5000) + '+ children',
       location: 'Rajasthan, UP, Bihar'
     },
     {
@@ -80,7 +81,7 @@ export function LandingPage() {
       description: 'Mobile healthcare units serving remote communities with essential medical services',
       image: 'https://images.pexels.com/photos/6646917/pexels-photo-6646917.jpeg?auto=compress&cs=tinysrgb&w=400&h=250&dpr=1',
       progress: 60,
-      beneficiaries: '15,000+ people',
+      beneficiaries: formatNumber(15000) + '+ people',
       location: 'Maharashtra, Karnataka'
     },
     {
@@ -88,7 +89,7 @@ export function LandingPage() {
       description: 'Skill development and microfinance programs for rural women entrepreneurs',
       image: 'https://images.pexels.com/photos/8926553/pexels-photo-8926553.jpeg?auto=compress&cs=tinysrgb&w=400&h=250&dpr=1',
       progress: 85,
-      beneficiaries: '2,500+ women',
+      beneficiaries: formatNumber(2500) + '+ women',
       location: 'Gujarat, Madhya Pradesh'
     }
   ];
@@ -148,12 +149,12 @@ export function LandingPage() {
               >
                 Join Us
               </button>
-              <button 
+              <motion.button 
                 onClick={() => setShowLoginModal(true)}
                 className="border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors font-medium w-full md:w-auto"
               >
                 Login
-              </button>
+              </motion.button>
             </div>
           </div>
         </div>
@@ -207,8 +208,8 @@ export function LandingPage() {
                     <CheckCircle className="w-6 h-6 text-green-600" />
                   </div>
                   <div>
-                    <p className="font-semibold text-gray-900">50,000+ Lives Impacted</p>
-                    <p className="text-sm text-gray-600">Across 150+ villages</p>
+                    <p className="font-semibold text-gray-900">{formatNumber(50000)}+ Lives Impacted</p>
+                    <p className="text-sm text-gray-600">Across {formatNumber(150)}+ villages</p>
                   </div>
                 </div>
               </div>

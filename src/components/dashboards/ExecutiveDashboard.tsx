@@ -1,10 +1,11 @@
 import React from 'react';
 import { 
-  TrendingUp, Users, Target, DollarSign, 
+  TrendingUp, Users, Target, IndianRupee, 
   AlertTriangle, CheckCircle, Clock, Award,
   BarChart3, PieChart, LineChart
 } from 'lucide-react';
 import { useDashboard } from '../../contexts/DashboardContext';
+import { formatNumber } from '../../utils/formatNumber';
 
 export function LeadershipDashboard() {
   const { donations, projects, expenses } = useDashboard();
@@ -25,15 +26,15 @@ export function LeadershipDashboard() {
     },
     {
       label: 'Net Funds Available',
-      value: `₹${(netFunds / 100000).toFixed(1)}L`,
+      value: `₹${formatNumber(netFunds)}`,
       change: '+15%',
       trend: 'up',
-      icon: DollarSign,
+      icon: IndianRupee,
       color: 'text-blue-600'
     },
     {
       label: 'Beneficiaries Reached',
-      value: '12,450',
+      value: formatNumber(12450),
       change: '+8%',
       trend: 'up',
       icon: Users,
@@ -244,8 +245,8 @@ export function LeadershipDashboard() {
                   {projects.map((project) => (
                     <tr key={project.id} className="border-b border-gray-100">
                       <td className="py-3 px-4 font-medium text-gray-900">{project.name}</td>
-                      <td className="py-3 px-4 text-gray-700">₹{(project.budget / 100000).toFixed(1)}L</td>
-                      <td className="py-3 px-4 text-gray-700">₹{(project.spent / 100000).toFixed(1)}L</td>
+                      <td className="py-3 px-4 text-gray-700">₹{formatNumber(project.budget)}</td>
+                      <td className="py-3 px-4 text-gray-700">₹{formatNumber(project.spent)}</td>
                       <td className="py-3 px-4">
                         <div className="flex items-center gap-3">
                           <div className="w-16 bg-gray-200 rounded-full h-2">

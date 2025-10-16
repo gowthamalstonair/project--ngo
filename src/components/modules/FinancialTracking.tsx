@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import { useDashboard } from '../../contexts/DashboardContext';
 import { useScrollReset } from '../../hooks/useScrollReset';
+import { formatNumber } from '../../utils/formatNumber';
 
 export function FinancialTracking() {
   useScrollReset();
@@ -21,7 +22,7 @@ export function FinancialTracking() {
   const stats = [
     {
       label: 'Total Donations',
-      value: `₹${(totalDonations / 100000).toFixed(1)}L`,
+      value: `₹${formatNumber(totalDonations)}`,
       change: '+12%',
       trend: 'up',
       icon: IndianRupee,
@@ -29,7 +30,7 @@ export function FinancialTracking() {
     },
     {
       label: 'Total Expenses',
-      value: `₹${(totalExpenses / 100000).toFixed(1)}L`,
+      value: `₹${formatNumber(totalExpenses)}`,
       change: '+8%',
       trend: 'up',
       icon: TrendingUp,
@@ -37,7 +38,7 @@ export function FinancialTracking() {
     },
     {
       label: 'Net Balance',
-      value: `₹${(netBalance / 100000).toFixed(1)}L`,
+      value: `₹${formatNumber(netBalance)}`,
       change: '+15%',
       trend: 'up',
       icon: TrendingDown,
@@ -45,7 +46,7 @@ export function FinancialTracking() {
     },
     {
       label: 'Daily Burn Rate',
-      value: `₹${(burnRate / 1000).toFixed(1)}K`,
+      value: `₹${formatNumber(burnRate)}`,
       change: '-5%',
       trend: 'down',
       icon: PieChart,
@@ -264,7 +265,7 @@ export function FinancialTracking() {
                       <p className="text-sm text-gray-600">{donation.project} • {donation.date}</p>
                     </div>
                     <div className="text-right">
-                      <p className="text-lg font-semibold text-green-600">+₹{(donation.amount / 1000).toFixed(0)}K</p>
+                      <p className="text-lg font-semibold text-green-600">+₹{formatNumber(donation.amount)}</p>
                       <span className={`px-2 py-1 text-xs rounded-full ${
                         donation.status === 'completed' ? 'bg-green-100 text-green-800' :
                         donation.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
@@ -287,7 +288,7 @@ export function FinancialTracking() {
                       <p className="text-sm text-gray-600">{expense.category} • {expense.date}</p>
                     </div>
                     <div className="text-right">
-                      <p className="text-lg font-semibold text-red-600">-₹{(expense.amount / 1000).toFixed(0)}K</p>
+                      <p className="text-lg font-semibold text-red-600">-₹{formatNumber(expense.amount)}</p>
                       <span className={`px-2 py-1 text-xs rounded-full ${
                         expense.status === 'approved' ? 'bg-green-100 text-green-800' :
                         expense.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
@@ -316,7 +317,7 @@ export function FinancialTracking() {
                   <div key={index}>
                     <div className="flex justify-between items-center mb-2">
                       <span className="text-gray-700 font-medium">{category.name}</span>
-                      <span className="text-gray-900 font-semibold">₹{(category.amount / 1000).toFixed(0)}K</span>
+                      <span className="text-gray-900 font-semibold">₹{formatNumber(category.amount)}</span>
                     </div>
                     <div className="w-full bg-gray-200 rounded-full h-2">
                       <div 

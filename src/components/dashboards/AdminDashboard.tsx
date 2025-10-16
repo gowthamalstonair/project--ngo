@@ -5,6 +5,7 @@ import {
 } from 'lucide-react';
 import { Bar, BarChart, CartesianGrid, Tooltip, XAxis, YAxis, PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 import { useDashboard } from '../../contexts/DashboardContext';
+import { formatNumber } from '../../utils/formatNumber';
 
 export function AdminDashboard() {
   const { donations, projects, expenses, tasks } = useDashboard();
@@ -18,7 +19,7 @@ export function AdminDashboard() {
   const stats = [
     {
       label: 'Total Donations',
-      value: `₹${(totalDonations / 100000).toFixed(1)}L`,
+      value: `₹${formatNumber(totalDonations)}`,
       change: '+15.2%',
       trend: 'up',
       icon: IndianRupee,
@@ -26,7 +27,7 @@ export function AdminDashboard() {
     },
     {
       label: 'Total Expenses',
-      value: `₹${(totalExpenses / 100000).toFixed(1)}L`,
+      value: `₹${formatNumber(totalExpenses)}`,
       change: '-3.2%',
       trend: 'down',
       icon: TrendingDown,
@@ -34,7 +35,7 @@ export function AdminDashboard() {
     },
     {
       label: 'Active Projects',
-      value: activeProjects.toString(),
+      value: formatNumber(activeProjects),
       change: '+2 this quarter',
       trend: 'up',
       icon: FolderOpen,
@@ -42,7 +43,7 @@ export function AdminDashboard() {
     },
     {
       label: 'Completed Tasks',
-      value: completedTasks.toString(),
+      value: formatNumber(completedTasks),
       change: '+15 this week',
       trend: 'up',
       icon: CheckCircle,
@@ -149,10 +150,10 @@ export function AdminDashboard() {
                 axisLine={false} 
                 tickLine={false}
                 tick={{ fontSize: 12, fill: '#6b7280' }}
-                tickFormatter={(value) => `₹${(value/100000).toFixed(1)}L`}
+                tickFormatter={(value) => `₹${formatNumber(value)}`}
               />
               <Tooltip 
-                formatter={(value: number) => [`₹${(value/100000).toFixed(1)}L`, 'Donations']}
+                formatter={(value: number) => [`₹${formatNumber(value)}`, 'Donations']}
                 contentStyle={{
                   backgroundColor: '#fff',
                   border: '1px solid #e5e7eb',

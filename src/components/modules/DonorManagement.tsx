@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import { useDashboard } from '../../contexts/DashboardContext';
 import { useScrollReset } from '../../hooks/useScrollReset';
+import { formatNumber } from '../../utils/formatNumber';
 
 export function DonorManagement() {
   useScrollReset();
@@ -73,45 +74,39 @@ export function DonorManagement() {
     }
   ];
 
+  // ✅ Sort donors by amount (highest first)
+  const topDonors = [...donors].sort((a, b) => b.totalDonated - a.totalDonated);
+
   const stats = [
     {
       label: 'Total Donations',
-      value: recentDonations.length.toString(),
+      value: formatNumber(recentDonations.length),
       change: '+12%',
       icon: Gift,
       color: 'text-blue-600'
     },
     {
       label: 'Completed',
-      value: recentDonations.filter(d => d.status === 'completed').length.toString(),
+      value: formatNumber(recentDonations.filter(d => d.status === 'completed').length),
       change: '+8%',
       icon: Heart,
       color: 'text-green-600'
     },
     {
       label: 'Total Amount',
-      value: `₹${(recentDonations.reduce((sum, d) => sum + d.amount, 0) / 100000).toFixed(1)}L`,
+      value: `₹${formatNumber(recentDonations.reduce((sum, d) => sum + d.amount, 0))}`,
       change: '+15%',
       icon: IndianRupee,
       color: 'text-orange-600'
     },
     {
       label: 'Avg. Donation',
-      value: `₹${recentDonations.length > 0 ? (recentDonations.reduce((sum, d) => sum + d.amount, 0) / recentDonations.length).toLocaleString() : '0'}`,
+      value: `₹${recentDonations.length > 0 ? formatNumber(recentDonations.reduce((sum, d) => sum + d.amount, 0) / recentDonations.length) : '0'}`,
       change: '+3%',
       icon: TrendingUp,
       color: 'text-purple-600'
     }
   ];
-
-  const getTierColor = (tier: string) => {
-    switch (tier) {
-      case 'Platinum': return 'bg-gray-800 text-white';
-      case 'Gold': return 'bg-yellow-500 text-white';
-      case 'Silver': return 'bg-gray-400 text-white';
-      default: return 'bg-blue-500 text-white';
-    }
-  };
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -123,37 +118,35 @@ export function DonorManagement() {
   };
 
   const filteredDonations = recentDonations.filter(donation => {
-    const matchesSearch = (donation.donor || donation.donor_name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         (donation.project || donation.purpose || '').toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = selectedCategory === 'all' || (donation.type || donation.donation_type) === selectedCategory;
+    const matchesSearch = donation.donor.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         donation.project.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesCategory = selectedCategory === 'all' || donation.type === selectedCategory;
     return matchesSearch && matchesCategory;
   });
 
   // Get unique donor names for suggestions
-  const donorSuggestions = [...new Set(recentDonations.map(d => d.donor || d.donor_name))]
-    .filter(donor => donor && donor.toLowerCase().includes(searchTerm.toLowerCase()) && searchTerm.length > 0)
+  const donorSuggestions = [...new Set(recentDonations.map(d => d.donor))]
+    .filter(donor => donor.toLowerCase().includes(searchTerm.toLowerCase()) && searchTerm.length > 0)
     .slice(0, 5);
 
   return (
     <div className="p-8 max-w-7xl mx-auto">
       {/* Header */}
-      <div className="mb-8">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">Donor Management</h1>
-            <p className="text-gray-600">Manage relationships with your supporters</p>
-          </div>
-          <button 
-            onClick={() => {
-              window.history.pushState({}, '', '/add-donation');
-              window.dispatchEvent(new PopStateEvent('popstate'));
-            }}
-            className="bg-orange-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-orange-600 transition-colors flex items-center gap-2"
-          >
-            <Plus className="w-5 h-5" />
-            Add Donation
-          </button>
+      <div className="mb-8 flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Donor Management</h1>
+          <p className="text-gray-600">Manage relationships with your supporters</p>
         </div>
+        <button 
+          onClick={() => {
+            window.history.pushState({}, '', '/add-donation');
+            window.dispatchEvent(new PopStateEvent('popstate'));
+          }}
+          className="bg-orange-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-orange-600 transition-colors flex items-center gap-2"
+        >
+          <Plus className="w-5 h-5" />
+          Add Donation
+        </button>
       </div>
 
       {/* Stats */}
@@ -177,58 +170,56 @@ export function DonorManagement() {
 
       {/* Filters */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 mb-8">
-        <div className="p-6">
-          <div className="flex flex-col md:flex-row gap-4">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-              <input
-                type="text"
-                placeholder="Search donors..."
-                value={searchTerm}
-                onChange={(e) => {
-                  setSearchTerm(e.target.value);
-                  setShowSuggestions(e.target.value.length > 0);
-                }}
-                onFocus={() => setShowSuggestions(searchTerm.length > 0)}
-                onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
-                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-              />
-              {showSuggestions && donorSuggestions.length > 0 && (
-                <div className="absolute top-full left-0 right-0 bg-white border border-gray-300 rounded-lg shadow-lg z-10 mt-1">
-                  {donorSuggestions.map((donor, index) => (
-                    <button
-                      key={index}
-                      onClick={() => {
-                        setSearchTerm(donor);
-                        setShowSuggestions(false);
-                      }}
-                      className="w-full text-left px-4 py-3 hover:bg-gray-50 border-b border-gray-100 last:border-b-0"
-                    >
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center">
-                          <Gift className="w-4 h-4 text-orange-500" />
-                        </div>
-                        <span className="font-medium">{donor}</span>
+        <div className="p-6 flex flex-col md:flex-row gap-4">
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+            <input
+              type="text"
+              placeholder="Search donors..."
+              value={searchTerm}
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+                setShowSuggestions(e.target.value.length > 0);
+              }}
+              onFocus={() => setShowSuggestions(searchTerm.length > 0)}
+              onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
+              className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+            />
+            {showSuggestions && donorSuggestions.length > 0 && (
+              <div className="absolute top-full left-0 right-0 bg-white border border-gray-300 rounded-lg shadow-lg z-10 mt-1">
+                {donorSuggestions.map((donor, index) => (
+                  <button
+                    key={index}
+                    onClick={() => {
+                      setSearchTerm(donor);
+                      setShowSuggestions(false);
+                    }}
+                    className="w-full text-left px-4 py-3 hover:bg-gray-50 border-b border-gray-100 last:border-b-0"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center">
+                        <Gift className="w-4 h-4 text-orange-500" />
                       </div>
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
-            <select
-              value={selectedCategory}
-              onChange={(e) => setSelectedCategory(e.target.value)}
-              className="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-            >
-              <option value="all">All Types</option>
-              <option value="one-time">One-time</option>
-              <option value="recurring">Recurring</option>
-            </select>
-            <button className="flex items-center gap-2 px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
-              <Filter className="w-5 h-5" />
-              More Filters
-            </button>
+                      <span className="font-medium">{donor}</span>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
+          <select
+            value={selectedCategory}
+            onChange={(e) => setSelectedCategory(e.target.value)}
+            className="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+          >
+            <option value="all">All Types</option>
+            <option value="one-time">One-time</option>
+            <option value="recurring">Recurring</option>
+          </select>
+          <button className="flex items-center gap-2 px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+            <Filter className="w-5 h-5" />
+            More Filters
+          </button>
         </div>
       </div>
 
@@ -239,136 +230,136 @@ export function DonorManagement() {
         </div>
         <div className="p-6">
           <div className="space-y-4">
-              {recentDonations.length > 0 ? (
-                recentDonations.map((donation: any) => (
-                  <div key={donation.id || Math.random()} className="flex items-center gap-6 p-6 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
-                    <div className="w-16 h-16 rounded-full bg-orange-100 flex items-center justify-center">
-                      <Gift className="w-8 h-8 text-orange-500" />
+            {recentDonations.length > 0 ? (
+              filteredDonations.map((donation: any) => (
+                <div key={donation.id || Math.random()} className="flex items-center gap-6 p-6 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+                  <div className="w-16 h-16 rounded-full bg-orange-100 flex items-center justify-center">
+                    <Gift className="w-8 h-8 text-orange-500" />
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-3 mb-2">
+                      <h3 className="text-lg font-semibold text-gray-900">{donation.donor_name || donation.donor || 'Unknown Donor'}</h3>
+                      <span className={`px-2 py-1 text-xs rounded-full ${(donation.donation_type || donation.type) === 'recurring' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'}`}>
+                        {donation.donation_type || donation.type || 'one-time'}
+                      </span>
+                      <span className={`px-2 py-1 text-xs rounded-full ${getStatusColor(donation.status || 'pending')}`}>
+                        {donation.status || 'pending'}
+                      </span>
                     </div>
-                    <div className="flex-1">
-                      <div className="flex items-center gap-3 mb-2">
-                        <h3 className="text-lg font-semibold text-gray-900">{donation.donor_name || donation.donor || 'Unknown Donor'}</h3>
-                        <span className={`px-2 py-1 text-xs rounded-full ${(donation.donation_type || donation.type) === 'recurring' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'}`}>
-                          {donation.donation_type || donation.type || 'one-time'}
-                        </span>
-                        <span className={`px-2 py-1 text-xs rounded-full ${getStatusColor(donation.status || 'pending')}`}>
-                          {donation.status || 'pending'}
-                        </span>
+                    <div className="flex items-center gap-6 text-sm text-gray-600 mb-3">
+                      <div className="flex items-center gap-1">
+                        <Calendar className="w-4 h-4" />
+                        Date: {new Date(donation.created_at || donation.date || Date.now()).toLocaleDateString()}
                       </div>
-                      <div className="flex items-center gap-6 text-sm text-gray-600 mb-3">
-                        <div className="flex items-center gap-1">
-                          <Calendar className="w-4 h-4" />
-                          Date: {new Date(donation.created_at || donation.date || Date.now()).toLocaleDateString()}
-                        </div>
+                      <div className="flex items-center gap-1">
+                        <Target className="w-4 h-4" />
+                        Type: {donation.donor_type || donation.donorType || 'Individual'}
+                      </div>
+                      {(donation.purpose || donation.project) && (
                         <div className="flex items-center gap-1">
                           <Target className="w-4 h-4" />
-                          Type: {donation.donor_type || donation.donorType || 'Individual'}
+                          Purpose: {donation.purpose || donation.project}
                         </div>
-                        {(donation.purpose || donation.project) && (
-                          <div className="flex items-center gap-1">
-                            <Target className="w-4 h-4" />
-                            Purpose: {donation.purpose || donation.project}
-                          </div>
-                        )}
-                      </div>
-                      <div className="flex items-center gap-4">
-                        <div className="text-sm">
-                          <span className="text-gray-600">Amount: </span>
-                          <span className="font-semibold text-gray-900 text-lg">₹{parseFloat(donation.amount || 0).toLocaleString()}</span>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      {(donation.donor_email || donation.email) && (
-                        <button className="p-2 text-gray-400 hover:text-gray-600 transition-colors">
-                          <Mail className="w-5 h-5" />
-                        </button>
                       )}
-                      <button 
-                        onClick={() => {
-                          window.history.pushState({}, '', `/donor-details?id=${donation.id || Math.random()}`);
-                          window.dispatchEvent(new PopStateEvent('popstate'));
-                        }}
-                        className="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 transition-colors"
-                      >
-                        View Details
-                      </button>
+                    </div>
+                    <div className="flex items-center gap-4">
+                      <div className="text-sm">
+                        <span className="text-gray-600">Amount: </span>
+                        <span className="font-semibold text-gray-900 text-lg">₹{parseFloat(donation.amount || 0).toLocaleString()}</span>
+                      </div>
                     </div>
                   </div>
-                ))
-              ) : (
-                <div className="text-center py-8">
-                  <Gift className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                  <p className="text-gray-600">No donations found</p>
-                  <button 
-                    onClick={() => {
-                      window.history.pushState({}, '', '/add-donation');
-                      window.dispatchEvent(new PopStateEvent('popstate'));
-                    }}
-                    className="mt-4 bg-orange-500 text-white px-6 py-2 rounded-lg hover:bg-orange-600 transition-colors"
-                  >
-                    Add First Donation
-                  </button>
+                  <div className="flex items-center gap-3">
+                    {(donation.donor_email || donation.email) && (
+                      <button className="p-2 text-gray-400 hover:text-gray-600 transition-colors">
+                        <Mail className="w-5 h-5" />
+                      </button>
+                    )}
+                    <button 
+                      onClick={() => {
+                        window.history.pushState({}, '', `/donor-details?id=${donation.id || Math.random()}`);
+                        window.dispatchEvent(new PopStateEvent('popstate'));
+                      }}
+                      className="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 transition-colors"
+                    >
+                      View Details
+                    </button>
+                  </div>
                 </div>
-              )}
+              ))
+            ) : (
+              <div className="text-center py-8">
+                <Gift className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                <p className="text-gray-600">No donations found</p>
+                <button 
+                  onClick={() => {
+                    window.history.pushState({}, '', '/add-donation');
+                    window.dispatchEvent(new PopStateEvent('popstate'));
+                  }}
+                  className="mt-4 bg-orange-500 text-white px-6 py-2 rounded-lg hover:bg-orange-600 transition-colors"
+                >
+                  Add First Donation
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </div>
 
       {/* Donor Insights */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8">
+        {/* ✅ Top Donors (sorted by amount) */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-100">
           <div className="p-6 border-b border-gray-100">
             <h2 className="text-xl font-semibold text-gray-900">Top Donors</h2>
           </div>
-          <div className="p-6">
-            <div className="space-y-4">
-              {donors.slice(0, 3).map((donor, index) => (
-                <div key={donor.id} className="flex items-center gap-4 p-4 bg-gray-50 rounded-lg">
-                  <div className="flex items-center justify-center w-8 h-8 rounded-full bg-orange-500 text-white font-bold">
-                    {index + 1}
-                  </div>
-                  <img
-                    src={donor.avatar}
-                    alt={donor.name}
-                    className="w-10 h-10 rounded-full object-cover"
-                  />
-                  <div className="flex-1">
-                    <h3 className="font-semibold text-gray-900">{donor.name}</h3>
-                    <p className="text-sm text-gray-600">₹{(donor.totalDonated / 100000).toFixed(1)}L donated</p>
-                  </div>
-                  <Award className="w-5 h-5 text-yellow-500" />
+          <div className="p-6 space-y-4">
+            {topDonors.slice(0, 3).map((donor, index) => (
+              <div key={donor.id} className="flex items-center gap-4 p-4 bg-gray-50 rounded-lg">
+                <div className="flex items-center justify-center w-8 h-8 rounded-full bg-orange-500 text-white font-bold">
+                  {index + 1}
                 </div>
-              ))}
-            </div>
+                <img
+                  src={donor.avatar}
+                  alt={donor.name}
+                  className="w-10 h-10 rounded-full object-cover"
+                />
+                <div className="flex-1">
+                  <h3 className="font-semibold text-gray-900">{donor.name}</h3>
+                  <p className="text-sm text-gray-600">₹{formatNumber(donor.totalDonated)} donated</p>
+                </div>
+                <Award className="w-5 h-5 text-yellow-500" />
+              </div>
+            ))}
           </div>
         </div>
 
+        {/* Donation Trends */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-100">
           <div className="p-6 border-b border-gray-100">
             <h2 className="text-xl font-semibold text-gray-900">Donation Trends</h2>
           </div>
-          <div className="p-6">
-            <div className="space-y-6">
-              <div className="text-center">
-                <div className="text-3xl font-bold text-gray-900 mb-2">₹{(donors.reduce((sum, d) => sum + d.totalDonated, 0) / 100000).toFixed(1)}L</div>
-                <p className="text-gray-600">Total Donations This Year</p>
+          <div className="p-6 space-y-6">
+            <div className="text-center">
+              <div className="text-3xl font-bold text-gray-900 mb-2">
+                ₹{formatNumber(donors.reduce((sum, d) => sum + d.totalDonated, 0))}
               </div>
-              <div className="space-y-4">
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-600">Corporate Donors</span>
-                  <span className="font-semibold">60%</span>
-                </div>
-                <div className="w-full bg-gray-200 rounded-full h-2">
-                  <div className="bg-blue-500 h-2 rounded-full" style={{ width: '60%' }} />
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-600">Foundation Donors</span>
-                  <span className="font-semibold">40%</span>
-                </div>
-                <div className="w-full bg-gray-200 rounded-full h-2">
-                  <div className="bg-green-500 h-2 rounded-full" style={{ width: '40%' }} />
-                </div>
+              <p className="text-gray-600">Total Donations This Year</p>
+            </div>
+            <div className="space-y-4">
+              <div className="flex justify-between items-center">
+                <span className="text-gray-600">Corporate Donors</span>
+                <span className="font-semibold">60%</span>
+              </div>
+              <div className="w-full bg-gray-200 rounded-full h-2">
+                <div className="bg-blue-500 h-2 rounded-full" style={{ width: '60%' }} />
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-gray-600">Foundation Donors</span>
+                <span className="font-semibold">40%</span>
+              </div>
+              <div className="w-full bg-gray-200 rounded-full h-2">
+                <div className="bg-green-500 h-2 rounded-full" style={{ width: '40%' }} />
               </div>
             </div>
           </div>

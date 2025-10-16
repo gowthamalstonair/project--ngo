@@ -1,6 +1,7 @@
 import React from 'react';
 import { ArrowLeft, Mail, Phone, Calendar, IndianRupee, Gift, MapPin } from 'lucide-react';
 import { useDashboard } from '../../contexts/DashboardContext';
+import { formatNumber } from '../../utils/formatNumber';
 
 export function DonorDetails() {
   const { donations } = useDashboard();
@@ -92,7 +93,7 @@ export function DonorDetails() {
 
               <div className="mt-6 pt-6 border-t border-gray-100">
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-gray-900 mb-1">₹{totalDonated.toLocaleString()}</div>
+                  <div className="text-2xl font-bold text-gray-900 mb-1">₹{formatNumber(totalDonated)}</div>
                   <p className="text-gray-600">Total Contributed</p>
                 </div>
               </div>
@@ -109,7 +110,7 @@ export function DonorDetails() {
                     <IndianRupee className="w-6 h-6 text-blue-600" />
                   </div>
                 </div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-1">{donorDonations.length}</h3>
+                <h3 className="text-2xl font-bold text-gray-900 mb-1">{formatNumber(donorDonations.length)}</h3>
                 <p className="text-gray-600">Total Donations</p>
               </div>
 
@@ -119,7 +120,7 @@ export function DonorDetails() {
                     <Gift className="w-6 h-6 text-green-600" />
                   </div>
                 </div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-1">₹{(totalDonated / donorDonations.length).toLocaleString()}</h3>
+                <h3 className="text-2xl font-bold text-gray-900 mb-1">₹{formatNumber(totalDonated / donorDonations.length)}</h3>
                 <p className="text-gray-600">Average Donation</p>
               </div>
 
@@ -148,7 +149,7 @@ export function DonorDetails() {
                           <Gift className="w-6 h-6 text-orange-500" />
                         </div>
                         <div>
-                          <h3 className="font-semibold text-gray-900">₹{donation.amount.toLocaleString()}</h3>
+                          <h3 className="font-semibold text-gray-900">₹{formatNumber(donation.amount)}</h3>
                           <p className="text-sm text-gray-600">{donation.project}</p>
                           <p className="text-xs text-gray-500">{donation.date}</p>
                         </div>
