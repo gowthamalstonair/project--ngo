@@ -324,19 +324,26 @@ export function DonorManagement() {
           </div>
           <div className="p-6">
             <div className="space-y-4">
-              {donors.slice(0, 3).map((donor, index) => (
-                <div key={donor.id} className="flex items-center gap-4 p-4 bg-gray-50 rounded-lg">
+              {recentDonations
+                .sort((a, b) => (b.amount || 0) - (a.amount || 0))
+                .slice(0, 3)
+                .map((donation, index) => (
+                <div key={donation.id || index} className="flex items-center gap-4 p-4 bg-gray-50 rounded-lg">
                   <div className="flex items-center justify-center w-8 h-8 rounded-full bg-orange-500 text-white font-bold">
                     {index + 1}
                   </div>
-                  <img
-                    src={donor.avatar}
-                    alt={donor.name}
-                    className="w-10 h-10 rounded-full object-cover"
-                  />
+                  <div className="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center">
+                    <Gift className="w-6 h-6 text-orange-500" />
+                  </div>
                   <div className="flex-1">
-                    <h3 className="font-semibold text-gray-900">{donor.name}</h3>
-                    <p className="text-sm text-gray-600">₹{formatNumber(donor.totalDonated)} donated</p>
+                    <h3 className="font-semibold text-gray-900">{donation.donor_name || donation.donor || 'Anonymous'}</h3>
+                    <p className="text-sm text-gray-600">₹{formatNumber(donation.amount || 0)} donated</p>
+                    <div className="flex items-center gap-1 mt-1">
+                      <span className="px-2 py-1 text-xs rounded-full bg-blue-500 text-white">
+                        {donation.donor_type || donation.donorType || 'Individual'}
+                      </span>
+                      <span className="text-xs text-gray-500">{donation.donation_type || donation.type || 'one-time'}</span>
+                    </div>
                   </div>
                   <Award className="w-5 h-5 text-yellow-500" />
                 </div>
@@ -353,7 +360,7 @@ export function DonorManagement() {
             <div className="space-y-6">
               <div className="text-center">
                 <div className="text-3xl font-bold text-gray-900 mb-2">
-                  ₹{formatNumber(donors.reduce((sum, d) => sum + d.totalDonated, 0))}
+                  ₹{formatNumber(recentDonations.reduce((sum, d) => sum + (d.amount || 0), 0))}
                 </div>
                 <p className="text-gray-600">Total Donations This Year</p>
               </div>
