@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { 
-  Heart, CreditCard, Smartphone, Building, 
-  User, Mail, DollarSign, MessageSquare,
-  CheckCircle, ArrowLeft, Shield, Award
+  Heart, User, Mail, Phone, MapPin, BookOpen, 
+  Users, Droplets, Shield, Eye, Award, TrendingUp,
+  CheckCircle, X, Star, Quote
 } from 'lucide-react';
 
 interface DonationPageProps {
@@ -10,239 +10,222 @@ interface DonationPageProps {
 }
 
 export function DonationPage({ onClose }: DonationPageProps) {
-  const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
+    mobile: '',
+    address: '',
     amount: '',
-    message: '',
-    paymentMethod: 'card'
+    category: 'education'
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isProcessing, setIsProcessing] = useState(false);
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
-
-    if (!formData.name.trim()) {
-      newErrors.name = 'Name is required';
-    }
-
-    if (!formData.email.trim()) {
-      newErrors.email = 'Email is required';
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Please enter a valid email address';
-    }
-
-    if (!formData.amount.trim()) {
-      newErrors.amount = 'Donation amount is required';
-    } else if (isNaN(Number(formData.amount)) || Number(formData.amount) <= 0) {
-      newErrors.amount = 'Please enter a valid amount';
-    } else if (Number(formData.amount) < 10) {
-      newErrors.amount = 'Minimum donation amount is ₹10';
-    }
-
+    if (!formData.name.trim()) newErrors.name = 'Name is required';
+    if (!formData.email.trim()) newErrors.email = 'Email is required';
+    else if (!/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = 'Invalid email';
+    if (!formData.mobile.trim()) newErrors.mobile = 'Mobile is required';
+    if (!formData.amount.trim()) newErrors.amount = 'Amount is required';
+    else if (Number(formData.amount) < 100) newErrors.amount = 'Minimum ₹100';
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
-    if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: '' }));
-    }
-  };
-
-  const handleNext = () => {
-    if (validateForm()) {
-      setStep(2);
-    }
+    if (errors[field]) setErrors(prev => ({ ...prev, [field]: '' }));
   };
 
   const handlePayment = async () => {
+    if (!validateForm()) return;
     setIsProcessing(true);
-    
-    try {
-      // Simulate payment processing
-      await new Promise(resolve => setTimeout(resolve, 3000));
-      setStep(3);
-    } catch (error) {
-      setErrors({ payment: 'Payment failed. Please try again.' });
-    } finally {
-      setIsProcessing(false);
-    }
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    setIsProcessing(false);
+    onClose();
   };
 
-  const predefinedAmounts = [500, 1000, 2500, 5000, 10000];
-
-  const paymentMethods = [
-    {
-      id: 'card',
-      name: 'Credit/Debit Card',
-      icon: CreditCard,
-      description: 'Visa, MasterCard, RuPay'
-    },
-    {
-      id: 'upi',
-      name: 'UPI',
-      icon: Smartphone,
-      description: 'Google Pay, PhonePe, Paytm'
-    },
-    {
-      id: 'netbanking',
-      name: 'Net Banking',
-      icon: Building,
-      description: 'All major banks supported'
-    }
+  const impactCards = [
+    { amount: 500, icon: BookOpen, title: 'Education Support', desc: 'Provides school supplies for 2 children for a month', color: 'bg-blue-500' },
+    { amount: 1000, icon: Users, title: 'Community Care', desc: 'Supports healthcare for 5 families', color: 'bg-green-500' },
+    { amount: 5000, icon: Droplets, title: 'Clean Water', desc: 'Ensures clean water access for 20 people', color: 'bg-teal-500' }
   ];
 
-  if (step === 3) {
-    return (
-      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-        <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md">
-          <div className="p-8 text-center">
-            <div className="bg-green-100 p-4 rounded-full w-20 h-20 mx-auto mb-6 flex items-center justify-center">
-              <CheckCircle className="w-10 h-10 text-green-600" />
-            </div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">Thank You!</h2>
-            <p className="text-gray-600 mb-6">
-              Your generous donation of <span className="font-semibold text-gray-900">₹{formData.amount}</span> has been received successfully. 
-              You will receive a confirmation email shortly.
-            </p>
-            <div className="bg-orange-50 p-4 rounded-lg mb-6">
-              <p className="text-sm text-orange-800">
-                Your contribution will help us continue our mission of empowering communities and creating lasting change.
-              </p>
-            </div>
-            <button
-              onClick={onClose}
-              className="w-full bg-orange-500 text-white py-3 rounded-lg font-semibold hover:bg-orange-600 transition-colors"
-            >
-              Continue
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  const testimonials = [
+    { name: 'Priya Sharma', text: 'Thanks to your support, my daughter can now attend school regularly.', image: '👩' },
+    { name: 'Rajesh Kumar', text: 'The healthcare program saved my family during a critical time.', image: '👨' },
+    { name: 'Meera Patel', text: 'Clean water in our village has transformed our daily lives completely.', image: '👵' }
+  ];
+
+  const trustFeatures = [
+    { icon: Eye, title: 'Transparency', desc: 'Track every rupee' },
+    { icon: Award, title: 'Tax Benefits', desc: '80G certified' },
+    { icon: TrendingUp, title: 'Direct Impact', desc: 'No middlemen' },
+    { icon: Heart, title: 'Lasting Change', desc: 'Sustainable solutions' }
+  ];
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-7xl max-h-[95vh] overflow-y-auto">
         {/* Header */}
-        <div className="sticky top-0 bg-white border-b border-gray-200 p-6 rounded-t-2xl">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              {step === 2 && (
-                <button
-                  onClick={() => setStep(1)}
-                  className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-                >
-                  <ArrowLeft className="w-5 h-5 text-gray-600" />
-                </button>
-              )}
-              <div className="bg-orange-500 p-2 rounded-lg">
-                <Heart className="w-6 h-6 text-white" />
-              </div>
-              <div>
-                <h2 className="text-2xl font-bold text-gray-900">Make a Donation</h2>
-                <p className="text-gray-600">
-                  {step === 1 ? 'Your contribution makes a difference' : 'Choose your payment method'}
-                </p>
-              </div>
-            </div>
-            <button
-              onClick={onClose}
-              className="text-gray-400 hover:text-gray-600 transition-colors"
-            >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-          </div>
+        <div className="sticky top-0 bg-white border-b p-4 rounded-t-2xl flex justify-between items-center">
+          <h1 className="text-2xl font-bold text-gray-900">Donate Now</h1>
+          <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-lg">
+            <X className="w-6 h-6" />
+          </button>
         </div>
 
-        <div className="p-6">
-          {step === 1 && (
-            <div className="space-y-6">
-              {/* Impact Stats */}
-              <div className="bg-gradient-to-r from-orange-50 to-yellow-50 p-6 rounded-xl">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Your Impact</h3>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div className="text-center">
-                    <div className="bg-blue-100 p-3 rounded-lg w-fit mx-auto mb-2">
-                      <Award className="w-6 h-6 text-blue-600" />
+        {/* Hero Section */}
+        <div className="bg-gradient-to-r from-orange-500 to-orange-600 text-white p-8 text-center">
+          <h2 className="text-4xl font-bold mb-4">Transform Lives Today</h2>
+          <p className="text-xl mb-6 opacity-90">Your generosity creates lasting change in communities across India</p>
+          <button 
+            onClick={() => document.getElementById('donation-form')?.scrollIntoView({ behavior: 'smooth' })}
+            className="bg-white text-orange-600 px-8 py-3 rounded-full font-semibold hover:bg-gray-100 transition-colors"
+          >
+            Donate Now
+          </button>
+        </div>
+
+        <div className="grid lg:grid-cols-3 gap-8 p-8">
+          {/* Left Column */}
+          <div className="lg:col-span-2 space-y-8">
+            {/* Impact Cards */}
+            <section>
+              <h3 className="text-2xl font-bold text-gray-900 mb-6">Your Impact</h3>
+              <div className="grid md:grid-cols-3 gap-6">
+                {impactCards.map((card, idx) => {
+                  const Icon = card.icon;
+                  return (
+                    <div key={idx} className="bg-white border border-gray-200 rounded-xl p-6 hover:shadow-lg transition-all duration-300 hover:-translate-y-1 cursor-pointer group"
+                         onClick={() => handleInputChange('amount', card.amount.toString())}>
+                      <div className={`${card.color} w-12 h-12 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
+                        <Icon className="w-6 h-6 text-white" />
+                      </div>
+                      <h4 className="text-lg font-semibold text-gray-900 mb-2">₹{card.amount}</h4>
+                      <h5 className="font-medium text-gray-800 mb-2">{card.title}</h5>
+                      <p className="text-sm text-gray-600">{card.desc}</p>
                     </div>
-                    <p className="text-sm text-gray-600">₹500 can provide</p>
-                    <p className="font-semibold text-gray-900">School supplies for 5 children</p>
-                  </div>
-                  <div className="text-center">
-                    <div className="bg-green-100 p-3 rounded-lg w-fit mx-auto mb-2">
-                      <Heart className="w-6 h-6 text-green-600" />
-                    </div>
-                    <p className="text-sm text-gray-600">₹1000 can provide</p>
-                    <p className="font-semibold text-gray-900">Healthcare for 10 families</p>
-                  </div>
-                  <div className="text-center">
-                    <div className="bg-purple-100 p-3 rounded-lg w-fit mx-auto mb-2">
-                      <Shield className="w-6 h-6 text-purple-600" />
-                    </div>
-                    <p className="text-sm text-gray-600">₹2500 can provide</p>
-                    <p className="font-semibold text-gray-900">Clean water access for 1 month</p>
-                  </div>
-                </div>
+                  );
+                })}
               </div>
+            </section>
 
-              {/* Donation Form */}
-              <div className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      <User className="w-4 h-4 inline mr-2" />
-                      Full Name *
-                    </label>
-                    <input
-                      type="text"
-                      value={formData.name}
-                      onChange={(e) => handleInputChange('name', e.target.value)}
-                      className={`w-full px-4 py-3 rounded-lg border transition-colors ${
-                        errors.name ? 'border-red-300 focus:ring-red-500' : 'border-gray-300 focus:ring-orange-500'
-                      } focus:ring-2 focus:border-transparent`}
-                      placeholder="Enter your full name"
-                    />
-                    {errors.name && <p className="text-red-600 text-sm mt-1">{errors.name}</p>}
+            {/* Stories of Hope */}
+            <section>
+              <h3 className="text-2xl font-bold text-gray-900 mb-6">Stories of Hope</h3>
+              <div className="grid md:grid-cols-3 gap-6">
+                {testimonials.map((testimonial, idx) => (
+                  <div key={idx} className="bg-gray-50 rounded-xl p-6 hover:bg-gray-100 transition-colors">
+                    <Quote className="w-8 h-8 text-orange-500 mb-4" />
+                    <p className="text-gray-700 mb-4 italic">"{testimonial.text}"</p>
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center text-lg">
+                        {testimonial.image}
+                      </div>
+                      <div>
+                        <p className="font-semibold text-gray-900">{testimonial.name}</p>
+                        <div className="flex text-yellow-400">
+                          {[...Array(5)].map((_, i) => <Star key={i} className="w-4 h-4 fill-current" />)}
+                        </div>
+                      </div>
+                    </div>
                   </div>
+                ))}
+              </div>
+            </section>
 
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      <Mail className="w-4 h-4 inline mr-2" />
-                      Email Address *
-                    </label>
-                    <input
-                      type="email"
-                      value={formData.email}
-                      onChange={(e) => handleInputChange('email', e.target.value)}
-                      className={`w-full px-4 py-3 rounded-lg border transition-colors ${
-                        errors.email ? 'border-red-300 focus:ring-red-500' : 'border-gray-300 focus:ring-orange-500'
-                      } focus:ring-2 focus:border-transparent`}
-                      placeholder="Enter your email address"
-                    />
-                    {errors.email && <p className="text-red-600 text-sm mt-1">{errors.email}</p>}
-                  </div>
+            {/* Why Trust Us */}
+            <section>
+              <h3 className="text-2xl font-bold text-gray-900 mb-6">Why Trust Us</h3>
+              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {trustFeatures.map((feature, idx) => {
+                  const Icon = feature.icon;
+                  return (
+                    <div key={idx} className="text-center p-4 hover:bg-gray-50 rounded-xl transition-colors">
+                      <div className="bg-teal-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <Icon className="w-8 h-8 text-teal-600" />
+                      </div>
+                      <h4 className="font-semibold text-gray-900 mb-2">{feature.title}</h4>
+                      <p className="text-sm text-gray-600">{feature.desc}</p>
+                    </div>
+                  );
+                })}
+              </div>
+            </section>
+          </div>
+
+          {/* Right Column - Donation Form */}
+          <div className="lg:col-span-1">
+            <div id="donation-form" className="bg-white border border-gray-200 rounded-xl p-6 sticky top-24">
+              <h3 className="text-xl font-bold text-gray-900 mb-6">Make Your Donation</h3>
+              
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <User className="w-4 h-4 inline mr-2" />Name *
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.name}
+                    onChange={(e) => handleInputChange('name', e.target.value)}
+                    className={`w-full px-4 py-3 rounded-lg border ${errors.name ? 'border-red-300' : 'border-gray-300'} focus:ring-2 focus:ring-orange-500 focus:border-transparent`}
+                    placeholder="Your full name"
+                  />
+                  {errors.name && <p className="text-red-600 text-sm mt-1">{errors.name}</p>}
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    <DollarSign className="w-4 h-4 inline mr-2" />
-                    Donation Amount *
+                    <Mail className="w-4 h-4 inline mr-2" />Email *
                   </label>
-                  <div className="grid grid-cols-3 md:grid-cols-5 gap-3 mb-4">
-                    {predefinedAmounts.map((amount) => (
+                  <input
+                    type="email"
+                    value={formData.email}
+                    onChange={(e) => handleInputChange('email', e.target.value)}
+                    className={`w-full px-4 py-3 rounded-lg border ${errors.email ? 'border-red-300' : 'border-gray-300'} focus:ring-2 focus:ring-orange-500 focus:border-transparent`}
+                    placeholder="your@email.com"
+                  />
+                  {errors.email && <p className="text-red-600 text-sm mt-1">{errors.email}</p>}
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <Phone className="w-4 h-4 inline mr-2" />Mobile *
+                  </label>
+                  <input
+                    type="tel"
+                    value={formData.mobile}
+                    onChange={(e) => handleInputChange('mobile', e.target.value)}
+                    className={`w-full px-4 py-3 rounded-lg border ${errors.mobile ? 'border-red-300' : 'border-gray-300'} focus:ring-2 focus:ring-orange-500 focus:border-transparent`}
+                    placeholder="+91 98765 43210"
+                  />
+                  {errors.mobile && <p className="text-red-600 text-sm mt-1">{errors.mobile}</p>}
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <MapPin className="w-4 h-4 inline mr-2" />Address
+                  </label>
+                  <textarea
+                    value={formData.address}
+                    onChange={(e) => handleInputChange('address', e.target.value)}
+                    rows={2}
+                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                    placeholder="Your address"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Amount *</label>
+                  <div className="grid grid-cols-3 gap-2 mb-3">
+                    {[500, 1000, 5000].map(amount => (
                       <button
                         key={amount}
                         type="button"
                         onClick={() => handleInputChange('amount', amount.toString())}
-                        className={`py-2 px-4 rounded-lg border-2 transition-colors ${
+                        className={`py-2 px-3 rounded-lg border-2 text-sm font-medium transition-colors ${
                           formData.amount === amount.toString()
                             ? 'border-orange-500 bg-orange-50 text-orange-600'
                             : 'border-gray-200 hover:border-gray-300'
@@ -256,129 +239,48 @@ export function DonationPage({ onClose }: DonationPageProps) {
                     type="number"
                     value={formData.amount}
                     onChange={(e) => handleInputChange('amount', e.target.value)}
-                    className={`w-full px-4 py-3 rounded-lg border transition-colors ${
-                      errors.amount ? 'border-red-300 focus:ring-red-500' : 'border-gray-300 focus:ring-orange-500'
-                    } focus:ring-2 focus:border-transparent`}
-                    placeholder="Enter custom amount"
-                    min="10"
+                    className={`w-full px-4 py-3 rounded-lg border ${errors.amount ? 'border-red-300' : 'border-gray-300'} focus:ring-2 focus:ring-orange-500 focus:border-transparent`}
+                    placeholder="Enter amount"
+                    min="100"
                   />
                   {errors.amount && <p className="text-red-600 text-sm mt-1">{errors.amount}</p>}
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    <MessageSquare className="w-4 h-4 inline mr-2" />
-                    Message (Optional)
-                  </label>
-                  <textarea
-                    value={formData.message}
-                    onChange={(e) => handleInputChange('message', e.target.value)}
-                    rows={3}
-                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-colors"
-                    placeholder="Leave a message of support..."
-                  />
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Category</label>
+                  <div className="flex gap-2">
+                    {['education', 'healthcare', 'environment'].map(cat => (
+                      <button
+                        key={cat}
+                        type="button"
+                        onClick={() => handleInputChange('category', cat)}
+                        className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                          formData.category === cat
+                            ? 'bg-orange-500 text-white'
+                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                        }`}
+                      >
+                        {cat.charAt(0).toUpperCase() + cat.slice(1)}
+                      </button>
+                    ))}
+                  </div>
                 </div>
 
                 <button
-                  onClick={handleNext}
-                  className="w-full bg-orange-500 text-white py-3 rounded-lg font-semibold hover:bg-orange-600 transition-colors"
+                  onClick={handlePayment}
+                  disabled={isProcessing}
+                  className="w-full bg-orange-500 text-white py-3 rounded-lg font-semibold hover:bg-orange-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed mt-6"
                 >
-                  Continue to Payment
+                  {isProcessing ? 'Processing...' : 'Continue to Payment'}
                 </button>
+
+                <div className="flex items-center justify-center gap-2 text-sm text-gray-500 mt-4">
+                  <Shield className="w-4 h-4" />
+                  <span>Secure SSL encrypted payment</span>
+                </div>
               </div>
             </div>
-          )}
-
-          {step === 2 && (
-            <div className="space-y-6">
-              {/* Donation Summary */}
-              <div className="bg-gray-50 p-6 rounded-xl">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Donation Summary</h3>
-                <div className="space-y-2">
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Donor:</span>
-                    <span className="font-medium text-gray-900">{formData.name}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Email:</span>
-                    <span className="font-medium text-gray-900">{formData.email}</span>
-                  </div>
-                  <div className="flex justify-between text-lg">
-                    <span className="text-gray-600">Amount:</span>
-                    <span className="font-bold text-orange-600">₹{formData.amount}</span>
-                  </div>
-                  {formData.message && (
-                    <div className="pt-2 border-t border-gray-200">
-                      <span className="text-gray-600">Message:</span>
-                      <p className="text-gray-900 mt-1">{formData.message}</p>
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/* Payment Methods */}
-              <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Choose Payment Method</h3>
-                <div className="space-y-3">
-                  {paymentMethods.map((method) => {
-                    const Icon = method.icon;
-                    return (
-                      <button
-                        key={method.id}
-                        onClick={() => handleInputChange('paymentMethod', method.id)}
-                        className={`w-full p-4 rounded-lg border-2 transition-colors text-left ${
-                          formData.paymentMethod === method.id
-                            ? 'border-orange-500 bg-orange-50'
-                            : 'border-gray-200 hover:border-gray-300'
-                        }`}
-                      >
-                        <div className="flex items-center gap-4">
-                          <div className={`p-2 rounded-lg ${
-                            formData.paymentMethod === method.id ? 'bg-orange-100' : 'bg-gray-100'
-                          }`}>
-                            <Icon className={`w-5 h-5 ${
-                              formData.paymentMethod === method.id ? 'text-orange-600' : 'text-gray-600'
-                            }`} />
-                          </div>
-                          <div>
-                            <h4 className="font-semibold text-gray-900">{method.name}</h4>
-                            <p className="text-sm text-gray-600">{method.description}</p>
-                          </div>
-                        </div>
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-
-              {/* Security Notice */}
-              <div className="bg-blue-50 p-4 rounded-lg">
-                <div className="flex items-start gap-3">
-                  <Shield className="w-5 h-5 text-blue-600 mt-0.5" />
-                  <div>
-                    <h4 className="font-semibold text-blue-900">Secure Payment</h4>
-                    <p className="text-sm text-blue-800">
-                      Your payment is secured with 256-bit SSL encryption. We don't store your payment information.
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {errors.payment && (
-                <div className="text-red-600 text-sm text-center bg-red-50 p-3 rounded-lg">
-                  {errors.payment}
-                </div>
-              )}
-
-              <button
-                onClick={handlePayment}
-                disabled={isProcessing}
-                className="w-full bg-orange-500 text-white py-3 rounded-lg font-semibold hover:bg-orange-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {isProcessing ? 'Processing Payment...' : `Donate ₹${formData.amount}`}
-              </button>
-            </div>
-          )}
+          </div>
         </div>
       </div>
     </div>
