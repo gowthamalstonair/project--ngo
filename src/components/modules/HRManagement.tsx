@@ -9,67 +9,82 @@ import { useScrollReset } from '../../hooks/useScrollReset';
 
 export function HRManagement() {
   useScrollReset();
-  const [activeTab, setActiveTab] = useState('directory');
+  const [activeTab, setActiveTab] = useState(() => {
+    return localStorage.getItem('hrActiveTab') || 'directory';
+  });
 
-  const staff = [
+  React.useEffect(() => {
+    const savedTab = localStorage.getItem('hrActiveTab');
+    if (savedTab) {
+      setActiveTab(savedTab);
+      localStorage.removeItem('hrActiveTab');
+    }
+  }, []);
+
+  // Load custom employees from localStorage and merge with default staff
+  const defaultStaff = [
     {
       id: '1',
-      name: 'Priya Sharma',
+      name: 'Rajesh Kumar',
       position: 'Program Manager',
-      department: 'Program Management',
-      email: 'grandsngoindia@ngo.org.org',
-      phone: '+91 98765 43210',
-      location: 'New Delhi',
-      joinDate: '2023-06-15',
+      department: 'Education',
+      email: 'rajesh.kumar@ngoindia.org',
+      phone: '+91 9876543210',
+      location: 'Bengaluru, India',
+      joinDate: '2022-03-15',
       status: 'Active',
       performance: 4.8,
-      avatar: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=60&h=60&dpr=1'
+      avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face'
     },
     {
       id: '2',
-      name: 'Rajesh Kumar',
-      position: 'Executive Director',
-      department: 'Executive',
-      email: 'rajesh@ngo.org',
-      phone: '+91 98765 43211',
-      location: 'Mumbai',
-      joinDate: '2022-01-10',
+      name: 'Priya Sharma',
+      position: 'Finance Officer',
+      department: 'Finance',
+      email: 'priya.sharma@ngoindia.org',
+      phone: '+91 9876543211',
+      location: 'Mumbai, India',
+      joinDate: '2021-07-20',
       status: 'Active',
-      performance: 4.9,
-      avatar: 'https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=60&h=60&dpr=1'
+      performance: 4.7,
+      avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&h=150&fit=crop&crop=face'
     },
     {
       id: '3',
       name: 'Anita Patel',
       position: 'Field Coordinator',
       department: 'Field Operations',
-      email: 'anita@ngo.org',
-      phone: '+91 98765 43212',
-      location: 'Ahmedabad',
+      email: 'anita.patel@ngoindia.org',
+      phone: '+91 9876543212',
+      location: 'Ahmedabad, India',
       joinDate: '2023-03-20',
       status: 'Active',
-      performance: 4.7,
-      avatar: 'https://images.pexels.com/photos/1181686/pexels-photo-1181686.jpeg?auto=compress&cs=tinysrgb&w=60&h=60&dpr=1'
+      performance: 4.6,
+      avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face'
     },
     {
       id: '4',
       name: 'Amit Singh',
-      position: 'Finance Manager',
-      department: 'Finance',
-      email: 'amit@ngo.org',
-      phone: '+91 98765 43213',
-      location: 'Bangalore',
+      position: 'Communications Manager',
+      department: 'Communications',
+      email: 'amit.singh@ngoindia.org',
+      phone: '+91 9876543213',
+      location: 'Delhi, India',
       joinDate: '2022-08-05',
       status: 'Active',
-      performance: 4.6,
-      avatar: 'https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=60&h=60&dpr=1'
+      performance: 4.5,
+      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face'
     }
   ];
+
+  // Get custom employees from localStorage and merge with default staff
+  const customEmployees = JSON.parse(localStorage.getItem('customEmployees') || '[]');
+  const staff = [...defaultStaff, ...customEmployees];
 
   const leaveRequests = [
     {
       id: '1',
-      employee: 'Priya Sharma',
+      employee: 'Rajesh Kumar',
       type: 'Annual Leave',
       startDate: '2025-02-15',
       endDate: '2025-02-20',
@@ -105,33 +120,43 @@ export function HRManagement() {
   const performanceReviews = [
     {
       id: '1',
-      employee: 'Priya Sharma',
+      employee: 'Rajesh Kumar',
       period: 'Q4 2024',
       score: 4.8,
       status: 'Completed',
       reviewDate: '2024-12-15',
-      strengths: ['Leadership', 'Communication', 'Project Management'],
+      strengths: ['Project Management', 'Community Outreach', 'Team Leadership'],
       improvements: ['Technical Skills', 'Time Management']
     },
     {
       id: '2',
-      employee: 'Anita Patel',
+      employee: 'Priya Sharma',
       period: 'Q4 2024',
       score: 4.7,
       status: 'Completed',
       reviewDate: '2024-12-18',
-      strengths: ['Field Work', 'Community Relations', 'Problem Solving'],
-      improvements: ['Documentation', 'Reporting']
+      strengths: ['Financial Analysis', 'Budget Management', 'Compliance'],
+      improvements: ['Leadership', 'Communication']
     },
     {
       id: '3',
-      employee: 'Amit Singh',
+      employee: 'Anita Patel',
       period: 'Q4 2024',
       score: 4.6,
+      status: 'Completed',
+      reviewDate: '2024-12-20',
+      strengths: ['Community Relations', 'Field Operations', 'Problem Solving'],
+      improvements: ['Documentation', 'Reporting']
+    },
+    {
+      id: '4',
+      employee: 'Amit Singh',
+      period: 'Q4 2024',
+      score: 4.5,
       status: 'Pending',
       reviewDate: '2025-01-20',
-      strengths: ['Financial Analysis', 'Attention to Detail'],
-      improvements: ['Leadership', 'Communication']
+      strengths: ['Digital Marketing', 'Content Creation', 'Social Media'],
+      improvements: ['Leadership', 'Strategic Planning']
     }
   ];
 
@@ -220,7 +245,10 @@ export function HRManagement() {
                 <Star className="w-4 h-4 text-yellow-500" />
                 <span className="text-sm font-medium">{employee.performance}/5</span>
               </div>
-              <button className="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 transition-colors">
+              <button 
+                onClick={() => window.location.href = `/staff-profile?id=${employee.id}`}
+                className="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 transition-colors"
+              >
                 View Profile
               </button>
             </div>
@@ -267,10 +295,16 @@ export function HRManagement() {
             </div>
             {request.status === 'Pending' && (
               <div className="flex items-center gap-2">
-                <button className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-colors">
+                <button 
+                  onClick={() => alert(`Leave request APPROVED for ${request.employee}\n\nType: ${request.type}\nDuration: ${request.startDate} to ${request.endDate}\nDays: ${request.days}\nReason: ${request.reason}`)}
+                  className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-colors"
+                >
                   Approve
                 </button>
-                <button className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors">
+                <button 
+                  onClick={() => alert(`Leave request REJECTED for ${request.employee}\n\nType: ${request.type}\nDuration: ${request.startDate} to ${request.endDate}\nReason: ${request.reason}\n\nPlease provide feedback to the employee.`)}
+                  className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors"
+                >
                   Reject
                 </button>
               </div>
@@ -334,11 +368,17 @@ export function HRManagement() {
               </div>
             </div>
             <div className="flex items-center gap-2">
-              <button className="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 transition-colors">
+              <button 
+                onClick={() => window.location.href = `/performance-review-details?id=${review.id}`}
+                className="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 transition-colors"
+              >
                 View Details
               </button>
               {review.status === 'Pending' && (
-                <button className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors">
+                <button 
+                  onClick={() => alert(`Complete Performance Review\n\nEmployee: ${review.employee}\nPeriod: ${review.period}\n\nThis would open a form to:\n- Add final comments\n- Set performance goals\n- Schedule follow-up meeting\n- Submit final review`)}
+                  className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors"
+                >
                   Complete Review
                 </button>
               )}
@@ -358,7 +398,10 @@ export function HRManagement() {
             <h1 className="text-3xl font-bold text-gray-900 mb-2">HR Management</h1>
             <p className="text-gray-600">Manage staff, performance, and organizational development</p>
           </div>
-          <button className="bg-orange-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-orange-600 transition-colors flex items-center gap-2">
+          <button 
+            onClick={() => window.location.href = '/add-employee'}
+            className="bg-orange-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-orange-600 transition-colors flex items-center gap-2"
+          >
             <UserPlus className="w-5 h-5" />
             Add Employee
           </button>

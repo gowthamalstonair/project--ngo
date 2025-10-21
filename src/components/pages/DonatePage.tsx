@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { 
   Heart, CreditCard, Smartphone, Building, 
-  User, Mail, DollarSign, MessageSquare,
+  User, Mail, IndianRupee, MessageSquare,
   CheckCircle, ArrowLeft, Shield, Award,
   Home, Phone, MapPin, CreditCard as PanIcon,
   Users, Target, Package, Upload, FileText,
   BookOpen, Stethoscope, Droplets, Utensils,
-  GraduationCap, HandHeart, Star, Quote
+  GraduationCap, HandHeart, Star, Quote, Clock, RotateCcw
 } from 'lucide-react';
 import { formatNumber } from '../../utils/formatNumber';
 
@@ -23,6 +23,7 @@ export function DonatePage() {
     panCard: '',
     category: 'money',
     amount: '',
+    frequency: 'one-time',
     things: '',
     thingsFiles: [] as File[],
     donorType: 'individual',
@@ -921,7 +922,7 @@ export function DonatePage() {
                             : 'border-gray-200 hover:border-gray-300'
                         }`}
                       >
-                        <DollarSign className="w-6 h-6 mx-auto mb-2" />
+                        <IndianRupee className="w-6 h-6 mx-auto mb-2" />
                         <span className="font-medium">Money</span>
                       </button>
                       <button
@@ -942,7 +943,43 @@ export function DonatePage() {
                   {formData.category === 'money' && (
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
-                        <DollarSign className="w-4 h-4 inline mr-2" />
+                        <Clock className="w-4 h-4 inline mr-2" />
+                        Donation Frequency
+                      </label>
+                      <p className="text-sm text-gray-600 mb-4">Choose how often you'd like to contribute</p>
+                      <div className="grid grid-cols-2 gap-4">
+                        <button
+                          type="button"
+                          onClick={() => handleInputChange('frequency', 'one-time')}
+                          className={`p-4 rounded-lg border-2 transition-colors text-center ${
+                            formData.frequency === 'one-time'
+                              ? 'border-orange-500 bg-orange-50 text-orange-600'
+                              : 'border-gray-200 hover:border-gray-300'
+                          }`}
+                        >
+                          <IndianRupee className="w-6 h-6 mx-auto mb-2" />
+                          <span className="font-medium">One-Time</span>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleInputChange('frequency', 'recurring')}
+                          className={`p-4 rounded-lg border-2 transition-colors text-center ${
+                            formData.frequency === 'recurring'
+                              ? 'border-orange-500 bg-orange-50 text-orange-600'
+                              : 'border-gray-200 hover:border-gray-300'
+                          }`}
+                        >
+                          <RotateCcw className="w-6 h-6 mx-auto mb-2" />
+                          <span className="font-medium">Recurring</span>
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {formData.category === 'money' && (
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <IndianRupee className="w-4 h-4 inline mr-2" />
                         Donation Amount *
                       </label>
                       <div className="grid grid-cols-3 md:grid-cols-5 gap-3 mb-4">
@@ -974,6 +1011,8 @@ export function DonatePage() {
                       {errors.amount && <p className="text-red-600 text-sm mt-1">{errors.amount}</p>}
                     </div>
                   )}
+
+
 
                   {formData.category === 'things' && (
                     <div className="space-y-4">

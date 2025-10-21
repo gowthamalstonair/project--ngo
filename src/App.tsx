@@ -20,6 +20,9 @@ import { DonorDetails } from './components/pages/DonorDetails';
 import { AddNGO } from './components/pages/AddNGO';
 import { WhatsAppCommunication } from './components/pages/WhatsAppCommunication';
 import { JoinNetwork } from './components/pages/JoinNetwork';
+import { AddEmployee } from './components/pages/AddEmployee';
+import StaffProfile from './components/pages/StaffProfile';
+import PerformanceReviewDetails from './components/pages/PerformanceReviewDetails';
 
 
 function AppContent() {
@@ -121,9 +124,16 @@ if (currentPage === '/whatsapp-communication') {
 if (currentPage === '/join-network') {
   return <JoinNetwork />;
 }
-if (currentPage === 'BrowserRouter as Router, Route, Routes') {
-  return ( <Router /> );
+if (currentPage === '/add-employee') {
+  return <AddEmployee />;
 }
+if (currentPage === '/staff-profile') {
+  return <StaffProfile />;
+}
+if (currentPage === '/performance-review-details') {
+  return <PerformanceReviewDetails />;
+}
+
 
   // Loading screen
   if (isLoading) {
