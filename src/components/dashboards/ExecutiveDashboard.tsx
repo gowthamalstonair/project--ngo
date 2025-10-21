@@ -204,16 +204,40 @@ export function LeadershipDashboard() {
             </div>
             <div className="p-6">
               <div className="space-y-3">
-                <button className="w-full bg-orange-500 text-white py-3 rounded-lg font-semibold hover:bg-orange-600 transition-colors">
+                <button 
+                  onClick={() => {
+                    localStorage.setItem('activeModule', 'finances');
+                    window.location.reload();
+                  }}
+                  className="w-full bg-orange-500 text-white py-3 rounded-lg font-semibold hover:bg-orange-600 transition-colors"
+                >
                   Review Budget Allocation
                 </button>
-                <button className="w-full bg-blue-500 text-white py-3 rounded-lg font-semibold hover:bg-blue-600 transition-colors">
+                <button 
+                  onClick={() => {
+                    localStorage.setItem('activeModule', 'projects');
+                    window.location.reload();
+                  }}
+                  className="w-full bg-blue-500 text-white py-3 rounded-lg font-semibold hover:bg-blue-600 transition-colors"
+                >
                   Approve New Initiative
                 </button>
-                <button className="w-full bg-green-500 text-white py-3 rounded-lg font-semibold hover:bg-green-600 transition-colors">
+                <button 
+                  onClick={() => {
+                    localStorage.setItem('activeModule', 'reports');
+                    window.location.reload();
+                  }}
+                  className="w-full bg-green-500 text-white py-3 rounded-lg font-semibold hover:bg-green-600 transition-colors"
+                >
                   Generate Board Report
                 </button>
-                <button className="w-full border border-gray-300 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-50 transition-colors">
+                <button 
+                  onClick={() => {
+                    localStorage.setItem('activeModule', 'hr');
+                    window.location.reload();
+                  }}
+                  className="w-full border border-gray-300 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-50 transition-colors"
+                >
                   Schedule Team Meeting
                 </button>
               </div>
