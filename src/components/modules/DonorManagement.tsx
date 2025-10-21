@@ -124,14 +124,14 @@ export function DonorManagement() {
   };
 
   const filteredDonations = recentDonations.filter(donation => {
-    const matchesSearch = (donation.donor || donation.donor_name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         (donation.project || donation.purpose || '').toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = selectedCategory === 'all' || (donation.type || donation.donation_type) === selectedCategory;
+    const matchesSearch = (donation.donor || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         (donation.project || '').toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesCategory = selectedCategory === 'all' || donation.type === selectedCategory;
     return matchesSearch && matchesCategory;
   });
 
   // Get unique donor names for suggestions
-  const donorSuggestions = [...new Set(recentDonations.map(d => d.donor || d.donor_name))]
+  const donorSuggestions = [...new Set(recentDonations.map(d => d.donor))]
     .filter(donor => donor && donor.toLowerCase().includes(searchTerm.toLowerCase()) && searchTerm.length > 0)
     .slice(0, 5);
 
@@ -248,9 +248,9 @@ export function DonorManagement() {
                     </div>
                     <div className="flex-1">
                       <div className="flex items-center gap-3 mb-2">
-                        <h3 className="text-lg font-semibold text-gray-900">{donation.donor_name || donation.donor || 'Unknown Donor'}</h3>
-                        <span className={`px-2 py-1 text-xs rounded-full ${(donation.donation_type || donation.type) === 'recurring' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'}`}>
-                          {donation.donation_type || donation.type || 'one-time'}
+                        <h3 className="text-lg font-semibold text-gray-900">{donation.donor || 'Unknown Donor'}</h3>
+                        <span className={`px-2 py-1 text-xs rounded-full ${donation.type === 'recurring' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'}`}>
+                          {donation.type || 'one-time'}
                         </span>
                         <span className={`px-2 py-1 text-xs rounded-full ${getStatusColor(donation.status || 'pending')}`}>
                           {donation.status || 'pending'}
@@ -259,16 +259,16 @@ export function DonorManagement() {
                       <div className="flex items-center gap-6 text-sm text-gray-600 mb-3">
                         <div className="flex items-center gap-1">
                           <Calendar className="w-4 h-4" />
-                          Date: {new Date(donation.created_at || donation.date || Date.now()).toLocaleDateString()}
+                          Date: {new Date(donation.date || Date.now()).toLocaleDateString()}
                         </div>
                         <div className="flex items-center gap-1">
                           <Target className="w-4 h-4" />
-                          Type: {donation.donor_type || donation.donorType || 'Individual'}
+                          Type: Individual
                         </div>
-                        {(donation.purpose || donation.project) && (
+                        {donation.project && (
                           <div className="flex items-center gap-1">
                             <Target className="w-4 h-4" />
-                            Purpose: {donation.purpose || donation.project}
+                            Purpose: {donation.project}
                           </div>
                         )}
                       </div>
@@ -280,11 +280,9 @@ export function DonorManagement() {
                       </div>
                     </div>
                     <div className="flex items-center gap-3">
-                      {(donation.donor_email || donation.email) && (
-                        <button className="p-2 text-gray-400 hover:text-gray-600 transition-colors">
-                          <Mail className="w-5 h-5" />
-                        </button>
-                      )}
+                      <button className="p-2 text-gray-400 hover:text-gray-600 transition-colors">
+                        <Mail className="w-5 h-5" />
+                      </button>
                       <button 
                         onClick={() => {
                           window.history.pushState({}, '', `/donor-details?id=${donation.id || Math.random()}`);
@@ -336,13 +334,13 @@ export function DonorManagement() {
                     <Gift className="w-6 h-6 text-orange-500" />
                   </div>
                   <div className="flex-1">
-                    <h3 className="font-semibold text-gray-900">{donation.donor_name || donation.donor || 'Anonymous'}</h3>
+                    <h3 className="font-semibold text-gray-900">{donation.donor || 'Anonymous'}</h3>
                     <p className="text-sm text-gray-600">₹{formatNumber(donation.amount || 0)} donated</p>
                     <div className="flex items-center gap-1 mt-1">
                       <span className="px-2 py-1 text-xs rounded-full bg-blue-500 text-white">
-                        {donation.donor_type || donation.donorType || 'Individual'}
+                        Individual
                       </span>
-                      <span className="text-xs text-gray-500">{donation.donation_type || donation.type || 'one-time'}</span>
+                      <span className="text-xs text-gray-500">{donation.type || 'one-time'}</span>
                     </div>
                   </div>
                   <Award className="w-5 h-5 text-yellow-500" />
