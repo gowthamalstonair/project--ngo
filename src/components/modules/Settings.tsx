@@ -131,9 +131,9 @@ export function Settings() {
     name: 'NGO INDIA',
     tagline: 'Empowering Communities, Transforming Lives',
     description: 'Dedicated to creating sustainable change through education, healthcare, and community development programs across rural India. We believe in empowering communities to become self-reliant.',
-    address: '123 Social Justice Avenue, New Delhi, India - 110001',
-    phone: '+91 11 4567 8900',
-    email: 'info@ngoindia.org',
+    address: '123 Social Justice Avenue, Bengaluru, India - 560001',
+    phone: '+91 8068447416',
+    email: 'grants@ngoindia.org',
     website: 'https://ngoindia.org',
     registrationNumber: 'NGO/2020/001234',
     taxId: 'AAACN1234A',
@@ -627,7 +627,7 @@ export function Settings() {
                 </div>
                 <div>
                   <p className="font-medium text-gray-900">Current Session</p>
-                  <p className="text-sm text-gray-600">Chrome on Windows • New Delhi, India</p>
+                  <p className="text-sm text-gray-600">Chrome on Windows • Bengaluru, India</p>
                   <p className="text-xs text-green-600 mt-1">Active now</p>
                 </div>
               </div>

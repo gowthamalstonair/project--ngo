@@ -7,6 +7,7 @@ import {
 import { Bar, BarChart, CartesianGrid, Tooltip, XAxis, YAxis, PieChart as RechartsPieChart, Pie, Cell, ResponsiveContainer, LineChart, Line, Area, AreaChart, Legend } from 'recharts';
 import { useDashboard } from '../../contexts/DashboardContext';
 import { useScrollReset } from '../../hooks/useScrollReset';
+import { formatNumber } from '../../utils/formatNumber';
 
 export function Reports() {
   useScrollReset();
@@ -244,7 +245,7 @@ export function Reports() {
                 <IndianRupee className="w-6 h-6 text-green-600" />
               </div>
               <div>
-                <h3 className="text-2xl font-bold text-gray-900">₹{(totalDonations / 100000).toFixed(1)}L</h3>
+                <h3 className="text-2xl font-bold text-gray-900">₹{formatNumber(totalDonations)}</h3>
                 <p className="text-gray-600">Total Donations</p>
               </div>
             </div>
@@ -256,7 +257,7 @@ export function Reports() {
                 <TrendingUp className="w-6 h-6 text-red-600" />
               </div>
               <div>
-                <h3 className="text-2xl font-bold text-gray-900">₹{(totalExpenses / 100000).toFixed(1)}L</h3>
+                <h3 className="text-2xl font-bold text-gray-900">₹{formatNumber(totalExpenses)}</h3>
                 <p className="text-gray-600">Total Expenses</p>
               </div>
             </div>
@@ -268,7 +269,7 @@ export function Reports() {
                 <Target className="w-6 h-6 text-blue-600" />
               </div>
               <div>
-                <h3 className="text-2xl font-bold text-gray-900">{activeProjects}</h3>
+                <h3 className="text-2xl font-bold text-gray-900">{formatNumber(activeProjects)}</h3>
                 <p className="text-gray-600">Active Projects</p>
               </div>
             </div>
@@ -280,7 +281,7 @@ export function Reports() {
                 <Users className="w-6 h-6 text-purple-600" />
               </div>
               <div>
-                <h3 className="text-2xl font-bold text-gray-900">50,000+</h3>
+                <h3 className="text-2xl font-bold text-gray-900">{formatNumber(50000)}+</h3>
                 <p className="text-gray-600">Lives Impacted</p>
               </div>
             </div>
@@ -389,15 +390,15 @@ export function Reports() {
           <div className="space-y-3">
             <div className="flex justify-between">
               <span className="text-gray-600">Total Donations</span>
-              <span className="font-semibold">₹{(donations.reduce((sum, d) => sum + d.amount, 0) / 100000).toFixed(1)}L</span>
+              <span className="font-semibold">₹{formatNumber(donations.reduce((sum, d) => sum + d.amount, 0))}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-gray-600">Recurring Donations</span>
-              <span className="font-semibold">₹{(donations.filter(d => d.type === 'recurring').reduce((sum, d) => sum + d.amount, 0) / 100000).toFixed(1)}L</span>
+              <span className="font-semibold">₹{formatNumber(donations.filter(d => d.type === 'recurring').reduce((sum, d) => sum + d.amount, 0))}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-gray-600">One-time Donations</span>
-              <span className="font-semibold">₹{(donations.filter(d => d.type === 'one-time').reduce((sum, d) => sum + d.amount, 0) / 100000).toFixed(1)}L</span>
+              <span className="font-semibold">₹{formatNumber(donations.filter(d => d.type === 'one-time').reduce((sum, d) => sum + d.amount, 0))}</span>
             </div>
           </div>
         </div>
@@ -407,15 +408,15 @@ export function Reports() {
           <div className="space-y-3">
             <div className="flex justify-between">
               <span className="text-gray-600">Program Materials</span>
-              <span className="font-semibold">₹{(expenses.filter(e => e.category === 'Program Materials').reduce((sum, e) => sum + e.amount, 0) / 1000).toFixed(0)}K</span>
+              <span className="font-semibold">₹{formatNumber(expenses.filter(e => e.category === 'Program Materials').reduce((sum, e) => sum + e.amount, 0))}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-gray-600">Equipment</span>
-              <span className="font-semibold">₹{(expenses.filter(e => e.category === 'Equipment').reduce((sum, e) => sum + e.amount, 0) / 1000).toFixed(0)}K</span>
+              <span className="font-semibold">₹{formatNumber(expenses.filter(e => e.category === 'Equipment').reduce((sum, e) => sum + e.amount, 0))}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-gray-600">Travel</span>
-              <span className="font-semibold">₹{(expenses.filter(e => e.category === 'Travel').reduce((sum, e) => sum + e.amount, 0) / 1000).toFixed(0)}K</span>
+              <span className="font-semibold">₹{formatNumber(expenses.filter(e => e.category === 'Travel').reduce((sum, e) => sum + e.amount, 0))}</span>
             </div>
           </div>
         </div>
@@ -425,11 +426,11 @@ export function Reports() {
           <div className="space-y-3">
             <div className="flex justify-between">
               <span className="text-gray-600">Net Balance</span>
-              <span className="font-semibold text-green-600">₹{((donations.reduce((sum, d) => sum + d.amount, 0) - expenses.reduce((sum, e) => sum + e.amount, 0)) / 100000).toFixed(1)}L</span>
+              <span className="font-semibold text-green-600">₹{formatNumber(donations.reduce((sum, d) => sum + d.amount, 0) - expenses.reduce((sum, e) => sum + e.amount, 0))}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-gray-600">Burn Rate</span>
-              <span className="font-semibold">₹{(expenses.reduce((sum, e) => sum + e.amount, 0) / 30 / 1000).toFixed(1)}K/day</span>
+              <span className="font-semibold">₹{formatNumber(expenses.reduce((sum, e) => sum + e.amount, 0) / 30)}/day</span>
             </div>
             <div className="flex justify-between">
               <span className="text-gray-600">Efficiency Ratio</span>
@@ -483,25 +484,25 @@ export function Reports() {
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
           <div className="text-center">
-            <h3 className="text-3xl font-bold text-gray-900">{projects.length}</h3>
+            <h3 className="text-3xl font-bold text-gray-900">{formatNumber(projects.length)}</h3>
             <p className="text-gray-600">Total Projects</p>
           </div>
         </div>
         <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
           <div className="text-center">
-            <h3 className="text-3xl font-bold text-green-600">{projects.filter(p => p.status === 'active').length}</h3>
+            <h3 className="text-3xl font-bold text-green-600">{formatNumber(projects.filter(p => p.status === 'active').length)}</h3>
             <p className="text-gray-600">Active Projects</p>
           </div>
         </div>
         <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
           <div className="text-center">
-            <h3 className="text-3xl font-bold text-blue-600">{projects.filter(p => p.status === 'completed').length}</h3>
+            <h3 className="text-3xl font-bold text-blue-600">{formatNumber(projects.filter(p => p.status === 'completed').length)}</h3>
             <p className="text-gray-600">Completed</p>
           </div>
         </div>
         <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
           <div className="text-center">
-            <h3 className="text-3xl font-bold text-orange-600">{Math.round(projects.reduce((sum, p) => sum + p.progress, 0) / projects.length)}%</h3>
+            <h3 className="text-3xl font-bold text-orange-600">{formatNumber(Math.round(projects.reduce((sum, p) => sum + p.progress, 0) / projects.length))}%</h3>
             <p className="text-gray-600">Avg Progress</p>
           </div>
         </div>
@@ -590,8 +591,8 @@ export function Reports() {
               {projects.map((project) => (
                 <tr key={project.id} className="border-b border-gray-100">
                   <td className="py-3 px-4 font-medium text-gray-900">{project.name}</td>
-                  <td className="py-3 px-4 text-gray-700">₹{(project.budget / 100000).toFixed(1)}L</td>
-                  <td className="py-3 px-4 text-gray-700">₹{(project.spent / 100000).toFixed(1)}L</td>
+                  <td className="py-3 px-4 text-gray-700">₹{formatNumber(project.budget)}</td>
+                  <td className="py-3 px-4 text-gray-700">₹{formatNumber(project.spent)}</td>
                   <td className="py-3 px-4">
                     <div className="flex items-center gap-3">
                       <div className="w-20 bg-gray-200 rounded-full h-2">
@@ -628,13 +629,13 @@ export function Reports() {
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
           <div className="text-center">
-            <h3 className="text-3xl font-bold text-gray-900">1,380</h3>
+            <h3 className="text-3xl font-bold text-gray-900">{formatNumber(1380)}</h3>
             <p className="text-gray-600">Total Donors</p>
           </div>
         </div>
         <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
           <div className="text-center">
-            <h3 className="text-3xl font-bold text-green-600">284</h3>
+            <h3 className="text-3xl font-bold text-green-600">{formatNumber(284)}</h3>
             <p className="text-gray-600">New This Month</p>
           </div>
         </div>
@@ -646,7 +647,7 @@ export function Reports() {
         </div>
         <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
           <div className="text-center">
-            <h3 className="text-3xl font-bold text-purple-600">₹18.2K</h3>
+            <h3 className="text-3xl font-bold text-purple-600">₹{formatNumber(18200)}</h3>
             <p className="text-gray-600">Avg Donation</p>
           </div>
         </div>
@@ -704,13 +705,13 @@ export function Reports() {
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
           <div className="text-center">
-            <h3 className="text-3xl font-bold text-gray-900">18,200</h3>
+            <h3 className="text-3xl font-bold text-gray-900">{formatNumber(18200)}</h3>
             <p className="text-gray-600">Lives Impacted</p>
           </div>
         </div>
         <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
           <div className="text-center">
-            <h3 className="text-3xl font-bold text-green-600">22</h3>
+            <h3 className="text-3xl font-bold text-green-600">{formatNumber(22)}</h3>
             <p className="text-gray-600">Active Programs</p>
           </div>
         </div>
@@ -722,7 +723,7 @@ export function Reports() {
         </div>
         <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
           <div className="text-center">
-            <h3 className="text-3xl font-bold text-red-600">₹275</h3>
+            <h3 className="text-3xl font-bold text-red-600">₹{formatNumber(275)}</h3>
             <p className="text-gray-600">Cost per Beneficiary</p>
           </div>
         </div>

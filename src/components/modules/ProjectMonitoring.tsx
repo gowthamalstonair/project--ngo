@@ -6,6 +6,7 @@ import {
 import { useDashboard } from '../../contexts/DashboardContext';
 import { CreateProject } from '../CreateProject';
 import { useScrollReset } from '../../hooks/useScrollReset';
+import { formatNumber } from '../../utils/formatNumber';
 
 export function ProjectMonitoring() {
   useScrollReset();
@@ -95,15 +96,15 @@ export function ProjectMonitoring() {
           <h2>Budget Overview</h2>
           <div class="stats-grid">
             <div class="stat-card">
-              <div class="stat-value">₹${(reportData.totalBudget / 100000).toFixed(1)}L</div>
+              <div class="stat-value">₹${formatNumber(reportData.totalBudget)}</div>
               <div class="stat-label">Total Budget</div>
             </div>
             <div class="stat-card">
-              <div class="stat-value">₹${(reportData.totalSpent / 100000).toFixed(1)}L</div>
+              <div class="stat-value">₹${formatNumber(reportData.totalSpent)}</div>
               <div class="stat-label">Total Spent</div>
             </div>
             <div class="stat-card">
-              <div class="stat-value">₹${((reportData.totalBudget - reportData.totalSpent) / 100000).toFixed(1)}L</div>
+              <div class="stat-value">₹${formatNumber(reportData.totalBudget - reportData.totalSpent)}</div>
               <div class="stat-label">Remaining</div>
             </div>
           </div>
@@ -130,11 +131,11 @@ export function ProjectMonitoring() {
                 </div>
                 <div class="project-details">
                   <div class="detail-item">
-                    <div class="detail-value">₹${(project.spent / 100000).toFixed(1)}L</div>
+                    <div class="detail-value">₹${formatNumber(project.spent)}</div>
                     <div class="detail-label">Spent</div>
                   </div>
                   <div class="detail-item">
-                    <div class="detail-value">₹${((project.budget - project.spent) / 100000).toFixed(1)}L</div>
+                    <div class="detail-value">₹${formatNumber(project.budget - project.spent)}</div>
                     <div class="detail-label">Remaining</div>
                   </div>
                   <div class="detail-item">
@@ -282,13 +283,13 @@ export function ProjectMonitoring() {
   const stats = [
     {
       label: 'Active Projects',
-      value: projects.filter((p: any) => p.status === 'active').length.toString(),
+      value: formatNumber(projects.filter((p: any) => p.status === 'active').length),
       icon: FolderOpen,
       color: 'text-blue-600'
     },
     {
       label: 'Total Budget',
-      value: `₹${(projects.reduce((sum: number, p: any) => sum + p.budget, 0) / 100000).toFixed(1)}L`,
+      value: `₹${formatNumber(projects.reduce((sum: number, p: any) => sum + p.budget, 0))}`,
       icon: Target,
       color: 'text-green-600'
     },

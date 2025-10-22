@@ -20,6 +20,7 @@ import { DonorDetails } from './components/pages/DonorDetails';
 import { AddNGO } from './components/pages/AddNGO';
 import { WhatsAppCommunication } from './components/pages/WhatsAppCommunication';
 import { JoinNetwork } from './components/pages/JoinNetwork';
+<<<<<<< HEAD
 import { CampaignsPage } from './components/pages/CampaignsPage';
 import { CampaignDetailsPage } from './components/pages/CampaignDetailsPage';
 import { CreateCampaignPage } from './components/pages/CreateCampaignPage';
@@ -31,6 +32,11 @@ import { PartnerOrganizationsPage } from './components/pages/PartnerOrganization
 import { MembershipPage } from './components/pages/MembershipPage';
 import { MembershipDashboard } from './components/pages/MembershipDashboard';
 import { JoinMembershipPage } from './components/pages/JoinMembershipPage';
+=======
+import { AddEmployee } from './components/pages/AddEmployee';
+import StaffProfile from './components/pages/StaffProfile';
+import PerformanceReviewDetails from './components/pages/PerformanceReviewDetails';
+>>>>>>> ea2a157f70353c5b0ee71117590890c4e38190b1
 
 
 function AppContent() {
@@ -132,6 +138,7 @@ if (currentPage === '/whatsapp-communication') {
 if (currentPage === '/join-network') {
   return <JoinNetwork />;
 }
+<<<<<<< HEAD
 if (currentPage === '/campaigns') {
   return <CampaignsPage />;
 }
@@ -169,7 +176,18 @@ if (currentPage === '/membership/join') {
 }
 if (currentPage === 'BrowserRouter as Router, Route, Routes') {
   return ( <Router /> );
+=======
+if (currentPage === '/add-employee') {
+  return <AddEmployee />;
+>>>>>>> ea2a157f70353c5b0ee71117590890c4e38190b1
 }
+if (currentPage === '/staff-profile') {
+  return <StaffProfile />;
+}
+if (currentPage === '/performance-review-details') {
+  return <PerformanceReviewDetails />;
+}
+
 
   // Loading screen
   if (isLoading) {

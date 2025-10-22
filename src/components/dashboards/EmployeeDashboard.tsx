@@ -5,6 +5,7 @@ import {
   Bell, Award, TrendingUp, FileText
 } from 'lucide-react';
 import { useDashboard } from '../../contexts/DashboardContext';
+import { formatNumber } from '../../utils/formatNumber';
 
 export function EmployeeDashboard() {
   const { tasks } = useDashboard();
@@ -16,13 +17,13 @@ export function EmployeeDashboard() {
   const stats = [
     {
       label: 'Tasks Completed',
-      value: completedTasks.length.toString(),
+      value: formatNumber(completedTasks.length),
       icon: CheckCircle,
       color: 'text-green-600'
     },
     {
       label: 'Pending Tasks',
-      value: pendingTasks.length.toString(),
+      value: formatNumber(pendingTasks.length),
       icon: Clock,
       color: 'text-yellow-600'
     },
