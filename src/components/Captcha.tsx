@@ -25,7 +25,7 @@ export function Captcha({ onVerify }: CaptchaProps) {
   }, []);
 
   useEffect(() => {
-    onVerify(userInput.toUpperCase() === captchaText);
+    onVerify(userInput === captchaText);
   }, [userInput, captchaText, onVerify]);
 
   return (

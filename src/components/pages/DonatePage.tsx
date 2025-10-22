@@ -105,7 +105,9 @@ export function DonatePage() {
       }
     }
 
-
+    if (!formData.purpose.trim()) {
+      newErrors.purpose = 'Purpose is required';
+    }
 
     // Validate donor type specific fields
     if (formData.donorType === 'family') {
@@ -1091,7 +1093,7 @@ export function DonatePage() {
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       <Users className="w-4 h-4 inline mr-2" />
-                      Donor Type
+                      Donor Type *
                     </label>
                     <select
                       value={formData.donorType}
@@ -1309,15 +1311,18 @@ export function DonatePage() {
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       <Target className="w-4 h-4 inline mr-2" />
-                      Purpose
+                      Purpose *
                     </label>
                     <input
                       type="text"
                       value={formData.purpose}
                       onChange={(e) => handleInputChange('purpose', e.target.value)}
-                      className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-colors"
+                      className={`w-full px-4 py-3 rounded-lg border transition-colors ${
+                        errors.purpose ? 'border-red-300 focus:ring-red-500' : 'border-gray-300 focus:ring-orange-500'
+                      } focus:ring-2 focus:border-transparent`}
                       placeholder="Enter the purpose of your donation"
                     />
+                    {errors.purpose && <p className="text-red-600 text-sm mt-1">{errors.purpose}</p>}
                   </div>
 
                   <div>
