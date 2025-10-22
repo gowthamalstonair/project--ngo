@@ -9,11 +9,17 @@ import { LoginModal } from './LoginModal';
 import { SignUpModal } from './SignUpModal';
 import { DonationPage } from './DonationPage';
 import { motion } from 'framer-motion';
+import { getCategoryImage } from '../utils/categoryImages';
 
 export function LandingPage() {
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showSignUpModal, setShowSignUpModal] = useState(false);
   const [showDonationPage, setShowDonationPage] = useState(false);
+
+  // Centralized image configuration
+  const IMAGES = {
+    EDUCATION_CAMPAIGN: getCategoryImage('education')
+  };
 
   const stats = [
     { value: '50,000+', label: 'Lives Impacted', icon: Heart },
@@ -70,7 +76,7 @@ export function LandingPage() {
     {
       title: 'Education for All',
       description: 'Providing quality education to underprivileged children across rural India',
-      image: 'https://images.pexels.com/photos/8613089/pexels-photo-8613089.jpeg?auto=compress&cs=tinysrgb&w=400&h=250&dpr=1',
+      image: getCategoryImage('education'),
       progress: 75,
       beneficiaries: '5,000+ children',
       location: 'Rajasthan, UP, Bihar'
@@ -204,7 +210,7 @@ export function LandingPage() {
               className="relative"
             >
               <img
-                src="https://images.pexels.com/photos/8613089/pexels-photo-8613089.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&dpr=1"
+                src="/indian-republic-day-celebration.jpg"
                 alt="Children in classroom"
                 className="rounded-2xl shadow-2xl"
               />
@@ -355,7 +361,7 @@ export function LandingPage() {
           <div className="bg-white rounded-2xl shadow-xl overflow-hidden mb-12">
             <div className="grid grid-cols-1 lg:grid-cols-2">
               <img
-                src="https://images.pexels.com/photos/1720186/pexels-photo-1720186.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&dpr=1"
+                src={IMAGES.EDUCATION_CAMPAIGN}
                 alt="Education Campaign"
                 className="w-full h-64 lg:h-full object-cover"
               />
