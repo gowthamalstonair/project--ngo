@@ -110,6 +110,8 @@ export function LandingPage() {
             <nav className="flex flex-col md:flex-row items-center space-y-2 md:space-y-0 md:space-x-8 w-full md:w-auto justify-center md:justify-start mb-2 md:mb-0">
               <a href="#about-ngo" className="text-gray-700 hover:text-orange-600 font-medium transition-colors">About</a>
               <a href="#projects" className="text-gray-700 hover:text-orange-600 font-medium transition-colors">Projects</a>
+              <a href="/campaigns" className="text-gray-700 hover:text-orange-600 font-medium transition-colors">Campaigns</a>
+              <a href="#membership" className="text-gray-700 hover:text-orange-600 font-medium transition-colors">Membership</a>
               <a href="#impact" className="text-gray-700 hover:text-orange-600 font-medium transition-colors">Impact</a>
               <a href="#contact" className="text-gray-700 hover:text-orange-600 font-medium transition-colors">Contact</a>
             </nav>
@@ -337,15 +339,175 @@ export function LandingPage() {
         </div>
       </section>
 
+      {/* Featured Campaigns Section */}
+      <section className="py-20 bg-gradient-to-br from-orange-50 to-yellow-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">Featured Fundraising Campaigns</h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Support our active campaigns and help us reach our goals to create lasting impact
+            </p>
+          </div>
+          
+
+          
+          {/* Featured Campaign */}
+          <div className="bg-white rounded-2xl shadow-xl overflow-hidden mb-12">
+            <div className="grid grid-cols-1 lg:grid-cols-2">
+              <img
+                src="https://images.pexels.com/photos/1720186/pexels-photo-1720186.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&dpr=1"
+                alt="Education Campaign"
+                className="w-full h-64 lg:h-full object-cover"
+              />
+              <div className="p-8 lg:p-12">
+                <div className="bg-orange-100 text-orange-800 px-3 py-1 rounded-full text-sm font-medium w-fit mb-4">
+                  🔥 Urgent - Only 5 days left!
+                </div>
+                <h3 className="text-3xl font-bold text-gray-900 mb-4">Education for 1000 Children</h3>
+                <p className="text-gray-600 mb-6 leading-relaxed">
+                  Help us provide quality education and school supplies to 1000 underprivileged children across rural India. Every donation brings us closer to our goal.
+                </p>
+                
+                {/* Progress Bar */}
+                <div className="mb-6">
+                  <div className="flex justify-between text-sm text-gray-600 mb-2">
+                    <span>₹85,000 raised</span>
+                    <span>₹1,00,000 goal</span>
+                  </div>
+                  <div className="w-full bg-gray-200 rounded-full h-4">
+                    <div className="bg-gradient-to-r from-orange-500 to-orange-600 h-4 rounded-full" style={{ width: '85%' }}></div>
+                  </div>
+                  <div className="text-center mt-2">
+                    <span className="text-2xl font-bold text-orange-600">85%</span>
+                    <span className="text-gray-500 text-sm ml-1">completed</span>
+                  </div>
+                </div>
+                
+                <div className="flex items-center justify-between text-sm text-gray-600 mb-6">
+                  <div className="flex items-center gap-1">
+                    <Users className="w-4 h-4" />
+                    <span>156 donors</span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <Target className="w-4 h-4" />
+                    <span>5 days left</span>
+                  </div>
+                </div>
+                
+                <div className="flex gap-4">
+                  <button
+                    onClick={() => window.location.href = '/campaigns/1'}
+                    className="flex-1 bg-orange-500 text-white py-3 px-6 rounded-lg font-semibold hover:bg-orange-600 transition-colors"
+                  >
+                    Donate Now
+                  </button>
+                  <button
+                    onClick={() => window.location.href = '/campaigns/1'}
+                    className="border border-orange-500 text-orange-600 py-3 px-6 rounded-lg font-semibold hover:bg-orange-50 transition-colors"
+                  >
+                    Learn More
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          {/* Other Active Campaigns */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+            <div className="bg-white rounded-xl shadow-lg p-6">
+              <h4 className="font-semibold text-gray-900 mb-2">Clean Water Project</h4>
+              <div className="w-full bg-gray-200 rounded-full h-2 mb-2">
+                <div className="bg-blue-500 h-2 rounded-full" style={{ width: '100%' }}></div>
+              </div>
+              <div className="flex justify-between text-sm text-gray-600">
+                <span>₹75,000 / ₹75,000</span>
+                <span className="text-green-600 font-medium">✓ Completed</span>
+              </div>
+            </div>
+            
+            <div className="bg-white rounded-xl shadow-lg p-6">
+              <h4 className="font-semibold text-gray-900 mb-2">Medical Equipment</h4>
+              <div className="w-full bg-gray-200 rounded-full h-2 mb-2">
+                <div className="bg-orange-500 h-2 rounded-full" style={{ width: '60%' }}></div>
+              </div>
+              <div className="flex justify-between text-sm text-gray-600">
+                <span>₹30,000 / ₹50,000</span>
+                <span>15 days left</span>
+              </div>
+            </div>
+            
+            <div className="bg-white rounded-xl shadow-lg p-6">
+              <h4 className="font-semibold text-gray-900 mb-2">Food Relief Program</h4>
+              <div className="w-full bg-gray-200 rounded-full h-2 mb-2">
+                <div className="bg-red-500 h-2 rounded-full" style={{ width: '40%' }}></div>
+              </div>
+              <div className="flex justify-between text-sm text-gray-600">
+                <span>₹10,000 / ₹25,000</span>
+                <span className="text-red-600 font-medium">8 days left</span>
+              </div>
+            </div>
+          </div>
+          
+          <div className="text-center">
+            <button
+              onClick={() => window.location.href = '/campaigns'}
+              className="bg-orange-500 text-white px-8 py-3 rounded-lg font-semibold hover:bg-orange-600 transition-colors inline-flex items-center gap-2"
+            >
+              View All Campaigns
+              <ArrowRight className="w-5 h-5" />
+            </button>
+          </div>
+        </div>
+      </section>
+
       {/* Projects Section */}
       <section id="projects" className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-gray-900 mb-4">Our Active Projects</h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Discover how we're making a difference across various sectors and communities
+              Discover how we're making a difference across various sectors and communities through individual initiatives and collaborative joint projects with partner organizations
             </p>
           </div>
+          
+          {/* Joint Projects Highlight */}
+          <div className="bg-gradient-to-br from-orange-50 to-orange-100 rounded-2xl p-8 mb-12">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+              <div className="text-center">
+                <div className="bg-orange-500 p-3 rounded-full w-12 h-12 mx-auto mb-3 flex items-center justify-center">
+                  <Handshake className="w-6 h-6 text-white" />
+                </div>
+                <div className="text-2xl font-bold text-orange-600">25+</div>
+                <div className="text-sm text-gray-600">Partner Organizations</div>
+              </div>
+              <div className="text-center">
+                <div className="bg-blue-500 p-3 rounded-full w-12 h-12 mx-auto mb-3 flex items-center justify-center">
+                  <Target className="w-6 h-6 text-white" />
+                </div>
+                <div className="text-2xl font-bold text-blue-600">12</div>
+                <div className="text-sm text-gray-600">Joint Initiatives</div>
+              </div>
+              <div className="text-center">
+                <div className="bg-green-500 p-3 rounded-full w-12 h-12 mx-auto mb-3 flex items-center justify-center">
+                  <Globe className="w-6 h-6 text-white" />
+                </div>
+                <div className="text-2xl font-bold text-green-600">75K+</div>
+                <div className="text-sm text-gray-600">Collective Impact</div>
+              </div>
+            </div>
+            <div className="text-center">
+              <h3 className="text-xl font-bold text-gray-900 mb-2">Joint Project Coordination</h3>
+              <p className="text-gray-700 mb-4">Collaborate with partner organizations to maximize impact through coordinated initiatives</p>
+              <button
+                onClick={() => window.location.href = '/joint-projects'}
+                className="bg-orange-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-orange-600 transition-colors inline-flex items-center gap-2"
+              >
+                <Handshake className="w-5 h-5" />
+                Explore Joint Projects
+              </button>
+            </div>
+          </div>
+          
           <motion.div
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
             initial="hidden"
@@ -401,6 +563,199 @@ export function LandingPage() {
               </motion.div>
             ))}
           </motion.div>
+          
+          {/* Featured Joint Project */}
+          <div className="mt-12 bg-gradient-to-r from-orange-500 to-orange-600 rounded-2xl shadow-xl overflow-hidden">
+            <div className="grid grid-cols-1 lg:grid-cols-2">
+              <div className="p-8 text-white">
+                <div className="bg-white bg-opacity-20 px-3 py-1 rounded-full text-sm font-medium w-fit mb-4">
+                  🤝 Joint Initiative
+                </div>
+                <h3 className="text-2xl font-bold mb-3">Rural Digital Literacy Initiative</h3>
+                <p className="opacity-90 mb-4">
+                  A collaborative effort with 4 partner organizations to bring digital literacy to 50 villages, reaching 15,000 beneficiaries.
+                </p>
+                <div className="grid grid-cols-2 gap-3 mb-4 text-sm">
+                  <div>
+                    <div className="font-semibold">Partners</div>
+                    <div className="opacity-90">4 Organizations</div>
+                  </div>
+                  <div>
+                    <div className="font-semibold">Budget</div>
+                    <div className="opacity-90">₹25 Lakhs</div>
+                  </div>
+                </div>
+                <button
+                  onClick={() => window.location.href = '/joint-projects/1'}
+                  className="bg-white text-orange-600 py-2 px-4 rounded-lg font-semibold hover:bg-gray-100 transition-colors"
+                >
+                  View Details
+                </button>
+              </div>
+              <div className="relative">
+                <img
+                  src="https://images.pexels.com/photos/5905709/pexels-photo-5905709.jpeg?auto=compress&cs=tinysrgb&w=400&h=250&dpr=1"
+                  alt="Digital Literacy Training"
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute top-4 right-4 bg-white bg-opacity-90 px-2 py-1 rounded text-xs font-medium text-gray-900">
+                  72% Complete
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Membership Section */}
+      <section id="membership" className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">Join Our Community</h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Become a member of NGO INDIA and be part of a community dedicated to creating lasting change. 
+              Connect with like-minded individuals and make a greater impact together.
+            </p>
+          </div>
+          
+          {/* Membership Stats */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+            <div className="text-center">
+              <div className="bg-orange-100 p-4 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+                <Users className="w-8 h-8 text-orange-600" />
+              </div>
+              <div className="text-3xl font-bold text-gray-900 mb-2">2,500+</div>
+              <div className="text-gray-600">Total Members</div>
+            </div>
+            <div className="text-center">
+              <div className="bg-blue-100 p-4 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+                <Heart className="w-8 h-8 text-blue-600" />
+              </div>
+              <div className="text-3xl font-bold text-gray-900 mb-2">450+</div>
+              <div className="text-gray-600">Active Volunteers</div>
+            </div>
+            <div className="text-center">
+              <div className="bg-green-100 p-4 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+                <TrendingUp className="w-8 h-8 text-green-600" />
+              </div>
+              <div className="text-3xl font-bold text-gray-900 mb-2">85%</div>
+              <div className="text-gray-600">Member Retention</div>
+            </div>
+            <div className="text-center">
+              <div className="bg-purple-100 p-4 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+                <Award className="w-8 h-8 text-purple-600" />
+              </div>
+              <div className="text-3xl font-bold text-gray-900 mb-2">₹15L+</div>
+              <div className="text-gray-600">Member Contributions</div>
+            </div>
+          </div>
+          
+          {/* Membership Benefits */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+            <div className="bg-gradient-to-br from-orange-50 to-orange-100 p-8 rounded-xl text-center">
+              <div className="bg-orange-500 p-4 rounded-full w-16 h-16 mx-auto mb-6 flex items-center justify-center">
+                <Users className="w-8 h-8 text-white" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-3">Community Access</h3>
+              <p className="text-gray-700">Connect with like-minded individuals and participate in exclusive member events and activities.</p>
+            </div>
+            
+            <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-8 rounded-xl text-center">
+              <div className="bg-blue-500 p-4 rounded-full w-16 h-16 mx-auto mb-6 flex items-center justify-center">
+                <Shield className="w-8 h-8 text-white" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-3">Impact Transparency</h3>
+              <p className="text-gray-700">Receive detailed reports on how your contributions are making a difference in communities.</p>
+            </div>
+            
+            <div className="bg-gradient-to-br from-green-50 to-green-100 p-8 rounded-xl text-center">
+              <div className="bg-green-500 p-4 rounded-full w-16 h-16 mx-auto mb-6 flex items-center justify-center">
+                <Award className="w-8 h-8 text-white" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-3">Recognition & Rewards</h3>
+              <p className="text-gray-700">Get recognized for your contributions and receive exclusive member rewards and certificates.</p>
+            </div>
+          </div>
+          
+          {/* Featured Membership Tiers */}
+          <div className="bg-gradient-to-r from-orange-500 to-orange-600 rounded-2xl shadow-xl overflow-hidden mb-8">
+            <div className="grid grid-cols-1 lg:grid-cols-2">
+              <div className="p-8 lg:p-12 text-white">
+                <h3 className="text-3xl font-bold mb-4">Choose Your Membership</h3>
+                <p className="text-lg opacity-90 mb-6">
+                  From Supporter to Patron, find the membership tier that matches your commitment level and start making a difference today.
+                </p>
+                
+                <div className="grid grid-cols-2 gap-4 mb-6 text-sm">
+                  <div>
+                    <div className="font-semibold">Starting From</div>
+                    <div className="opacity-90">₹500/year</div>
+                  </div>
+                  <div>
+                    <div className="font-semibold">Member Benefits</div>
+                    <div className="opacity-90">Exclusive Access</div>
+                  </div>
+                  <div>
+                    <div className="font-semibold">Community</div>
+                    <div className="opacity-90">2,500+ Members</div>
+                  </div>
+                  <div>
+                    <div className="font-semibold">Impact</div>
+                    <div className="opacity-90">Direct Involvement</div>
+                  </div>
+                </div>
+                
+                <div className="flex gap-4">
+                  <button
+                    onClick={() => window.location.href = '/membership'}
+                    className="bg-white text-orange-600 py-3 px-6 rounded-lg font-semibold hover:bg-gray-100 transition-colors"
+                  >
+                    View Membership Plans
+                  </button>
+                  <button
+                    onClick={() => window.location.href = '/membership/dashboard'}
+                    className="border-2 border-white text-white py-3 px-6 rounded-lg font-semibold hover:bg-white hover:text-orange-600 transition-colors"
+                  >
+                    Member Login
+                  </button>
+                </div>
+              </div>
+              <div className="relative">
+                <img
+                  src="https://images.pexels.com/photos/1181686/pexels-photo-1181686.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&dpr=1"
+                  alt="Community Members"
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute top-4 right-4 bg-white bg-opacity-90 px-3 py-2 rounded-lg">
+                  <div className="text-sm font-medium text-gray-900">Join 2,500+ Members</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          {/* Member Testimonial */}
+          <div className="bg-white rounded-2xl shadow-lg p-8 text-center">
+            <div className="flex items-center gap-1 justify-center mb-4">
+              {[...Array(5)].map((_, i) => (
+                <Star key={i} className="w-5 h-5 text-yellow-400 fill-current" />
+              ))}
+            </div>
+            <p className="text-xl text-gray-700 mb-6 italic max-w-3xl mx-auto">
+              "Being a member has connected me with like-minded people who share my passion for social change. 
+              The impact we create together is incredible."
+            </p>
+            <div className="flex items-center justify-center gap-4">
+              <img
+                src="https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=80&h=80&dpr=1"
+                alt="Priya Sharma"
+                className="w-12 h-12 rounded-full object-cover"
+              />
+              <div className="text-left">
+                <h4 className="font-semibold text-gray-900">Priya Sharma</h4>
+                <p className="text-sm text-orange-600">Champion Member</p>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -525,7 +880,11 @@ export function LandingPage() {
             <div className="flex flex-col items-start">
               <h4 className="font-semibold text-lg mb-6">Get Involved</h4>
               <ul className="space-y-3">
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Donate</a></li>
+                <li><a href="/donate" className="text-gray-400 hover:text-white transition-colors">Donate</a></li>
+                <li><a href="/campaigns" className="text-gray-400 hover:text-white transition-colors">Campaigns</a></li>
+                <li><a href="/joint-projects" className="text-gray-400 hover:text-white transition-colors">Joint Projects</a></li>
+                <li><a href="/membership" className="text-gray-400 hover:text-white transition-colors">Membership</a></li>
+                <li><a href="/recurring-donations" className="text-gray-400 hover:text-white transition-colors">Recurring Donations</a></li>
                 <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Volunteer</a></li>
                 <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Partner with Us</a></li>
                 <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Corporate CSR</a></li>
